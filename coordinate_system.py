@@ -1,40 +1,8 @@
-import array
-import time
-
 import numpy as np
 import sympy as sp
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import matplotlib.lines as mat_lines
-
-
-"""
-class Line:
-    def __init__(self, x1y1: list | tuple = (0, 0), x2y2: list | tuple = (0, 0)):
-        self.__x1y1 = x1y1
-        self.__x2y2 = x2y2
-        self.__line_obj = None
-
-    @property
-    def x1y1(self):
-        return self.__x1y1
-
-    @x1y1.setter
-    def x1y1(self, value: list | tuple):
-        self.__x1y1 = value
-
-    @property
-    def x2y2(self):
-        return self.__x1y1
-
-    @x2y2.setter
-    def x2y2(self, value: list | tuple):
-        self.__x1y1 = value
-
-    def draw(self, s):
-        self.__line_obj = s.ax.plot([s.x + self.x1y1[0], s.x + self.x2y2[0]], [s.y + self.x1y1[1], s.y + self.x2y2[1]],
-                                    linewidth=2, color=(0, 0, 0))[0]
-"""
 
 
 class Spring:
@@ -346,16 +314,35 @@ def main():
     s1.add(ax.plot([side_x, side_x], [center[1], center[1] + 1], linewidth=2, color=(0, 0, 0))[0])
 
     t = sp.Symbol('t')
-    X_T_relative = 1 * (sp.sin(2 * t) - 1)
+    X_T_relative = 1 * (sp.sin(1 * t) - 1)
     Y_T_relative = 0.00000001 * sp.sin(t)
+    # VX_T_relative = sp.diff(X_T_relative, t)
+
     _time = np.linspace(0, 520, 10000)
     F_X_T_relative = sp.lambdify(t, X_T_relative, "numpy")
     F_Y_T_relative = sp.lambdify(t, Y_T_relative, "numpy")
+    # F_VX_T_relative = sp.lambdify(t, VX_T_relative, "numpy")
     X_T_relative = F_X_T_relative(_time)
     Y_T_relative = F_Y_T_relative(_time)
+    # VX_T_relative = F_VX_T_relative(_time)
+
+    # for index, value in enumerate(VX_T_relative):
+    #     X_T_relative[index] -= value
 
     length = center[1] - center[0]
     PHI_T = 90 * sp.sin(0.2 * t) + 90
+
+    X_T_endure = 0.5 * sp.cos(PHI_T * (sp.pi / 180))
+    Y_T_endure = 0.5 * sp.sin(PHI_T * (sp.pi / 180))
+    F_X_T_endure = sp.lambdify(t, X_T_endure, "numpy")
+    F_Y_T_endure = sp.lambdify(t, Y_T_endure, "numpy")
+    X_T_endure = F_X_T_endure(_time)
+    Y_T_endure = F_Y_T_endure(_time)
+
+    for index, values in enumerate(zip(X_T_endure, Y_T_endure)):
+        value_x, value_y = values
+        X_T_relative[index] += value_x - value_y
+
     # PHI_T = 0.000000000000000001 * sp.sin(t)
     # V_PHI_T = sp.diff(PHI_T)
     # X_T_endure = sp.sin(PHI_T)
