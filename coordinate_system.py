@@ -40,11 +40,13 @@ class CoordinateSystem:
         self.phi_t = phi_t  # Закон поворота системы координат
         self.center = centerX, centerY
         self.angle = 0
-        self.objects = list()
-        self.r_ts = list()
+        self.object_names = dict()
+        self.__last = ""
+        # self.objects = list()
+        # self.r_ts = list()
         if ax is None:
             raise ValueError(f"Параметр \"ax\" должен быть определён!")
-        self.add(ax.plot([centerX], [centerY], 'o')[0])
+        self.add(f"__CENTER__{id(self)}", ax.plot([centerX], [centerY], 'o')[0])
 
     @property
     def x(self):
@@ -60,11 +62,13 @@ class CoordinateSystem:
         Возвращает последний добавленный в систему объект
         :return:
         """
-        return self.objects[-1]
+        return self.object_names[self.__last][0]
 
-    def add(self, any_object, x_t=None, y_t=None, phi_t=None):
-        self.objects.append(any_object)
-        self.r_ts.append((x_t, y_t, phi_t))
+    def add(self, name: str, any_object, x_t=None, y_t=None, phi_t=None):
+        self.object_names[name] = (any_object, (x_t, y_t, phi_t))
+        self.__last = name
+        # self.objects.append(any_object)
+        # self.r_ts.append((x_t, y_t, phi_t))
 
     def rotate(self, angle, center=None):
         """
@@ -77,7 +81,9 @@ class CoordinateSystem:
         angle = angle % (2 * np.pi)
         if center is None:
             center = self.center
-        for index, obj in enumerate(self.objects):
+
+        for index, name_obj in enumerate(self.object_names):
+            obj = self.object_names[name_obj][0]
             if isinstance(obj, Spring):
                 spring = obj.spring
                 x = list()
@@ -131,7 +137,8 @@ class CoordinateSystem:
         :param new_position:
         :return:
         """
-        for obj in self.objects:
+        for name_obj in self.object_names:
+            obj = self.object_names[name_obj][0]
             if isinstance(obj, mat_lines.Line2D):
                 x = list()
                 y = list()
@@ -160,22 +167,24 @@ class CoordinateSystem:
 
         self.center = new_position
 
-    def move_object(self, new_position: list | tuple, index: int = None):
+    def move_object(self, new_position: list | tuple, name: str = None):
         """
         Перемещает объекты внутри системы координат, не перемещая её.
         В переменной new_position координаты, относительно системы координат self
         :param new_position:
-        :param index:
+        :param name:
         :return:
         """
         new_x = new_position[0] * np.cos(self.angle) - new_position[1] * np.sin(self.angle)
         new_y = new_position[0] * np.sin(self.angle) + new_position[1] * np.cos(self.angle)
         new_position = [new_x, new_y]
-        if index is None:
+        if name is None:
             return
-        obj = self.objects[index]
+        obj = self.object_names[name][0]
         if isinstance(obj, mat_lines.Line2D):
-            if index == 0 and len(obj.get_data()[0]) == 1:
+            # if index == 0 and len(obj.get_data()[0]) == 1:
+            #     return
+            if name == f"__CENTER__{id(self)}":
                 return
             x = list()
             y = list()
@@ -204,7 +213,7 @@ class CoordinateSystem:
 
     def __move_object(self, new_position: list | tuple, obj):
         """
-        То же самое, что и move_object, только передаётся объект, а не индекс
+        То же самое, что и move_object, только передаётся объект.
         :param new_position:
         :param obj:
         :return:
@@ -236,7 +245,9 @@ class CoordinateSystem:
 
     # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ!
     def frame(self, i):
-        for obj, r_t in zip(self.objects, self.r_ts):
+        for index, name_obj in enumerate(self.object_names):
+            obj = self.object_names[name_obj][0]
+            r_t = self.object_names[name_obj][1]
 
             if isinstance(obj, mat_lines.Line2D):
                 x = list()
@@ -309,9 +320,9 @@ def main():
     center = [0, 7]
     s1 = CoordinateSystem(ax, *center)
     side_x = 3
-    s1.add(ax.plot([-side_x, side_x], [center[1], center[1]], linewidth=2, color=(0, 0, 0))[0])
-    s1.add(ax.plot([-side_x, -side_x], [center[1], center[1] + 1], linewidth=2, color=(0, 0, 0))[0])
-    s1.add(ax.plot([side_x, side_x], [center[1], center[1] + 1], linewidth=2, color=(0, 0, 0))[0])
+    s1.add("line1", ax.plot([-side_x, side_x], [center[1], center[1]], linewidth=2, color=(0, 0, 0))[0])
+    s1.add("line2", ax.plot([-side_x, -side_x], [center[1], center[1] + 1], linewidth=2, color=(0, 0, 0))[0])
+    s1.add("line3", ax.plot([side_x, side_x], [center[1], center[1] + 1], linewidth=2, color=(0, 0, 0))[0])
 
     t = sp.Symbol('t')
     X_T_relative = 1 * (sp.sin(1 * t) - 1)
@@ -352,21 +363,21 @@ def main():
     PHI_T_VALUES = F_PHI_T(_time)
     # V_PHI_T_VALUES = F_V_PHI_T(_time)
 
-    s1.add(plt.Rectangle([center[0] - 1, center[1]], width=2, height=1, color=(0.6, 0.6, 0.6)),
+    s1.add("rectangle1", plt.Rectangle([center[0] - 1, center[1]], width=2, height=1, color=(0.6, 0.6, 0.6)),
            X_T_relative, Y_T_relative)
     ax.add_patch(s1.last)
 
     spring_xy = create_spring_line(2, 10, 0.4, pos=(-side_x, center[1] + 0.5))
-    s1.add(Spring(ax.plot(spring_xy[0], spring_xy[1], linewidth=1, color=(0, 0.5, 0.8))[0], "left", 2),
+    s1.add("spring1", Spring(ax.plot(spring_xy[0], spring_xy[1], linewidth=1, color=(0, 0.5, 0.8))[0], "left", 2),
            X_T_relative, Y_T_relative)
     spring_xy = create_spring_line(2, 10, 0.4, pos=(center[0] + 1, center[1] + 0.5))
-    s1.add(Spring(ax.plot(spring_xy[0], spring_xy[1], linewidth=1, color=(0, 0.5, 0.8))[0], "right", 2),
+    s1.add("spring2", Spring(ax.plot(spring_xy[0], spring_xy[1], linewidth=1, color=(0, 0.5, 0.8))[0], "right", 2),
            X_T_relative, Y_T_relative)
 
     center2 = [0, 0]
     s = CoordinateSystem(ax, *center2)
-    s.add(ax.plot([center2[0], center2[0]], [center2[0], center[1]], linewidth=2, color=(0, 0, 0))[0])
-    s.add(s1)
+    s.add("line", ax.plot([center2[0], center2[0]], [center2[0], center[1]], linewidth=2, color=(0, 0, 0))[0])
+    s.add("CoordinateSystem1", s1)
     s.phi_t = PHI_T_VALUES
 
     def frame(i):
