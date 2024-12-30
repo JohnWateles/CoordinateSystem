@@ -167,7 +167,7 @@ class CoordinateSystem:
 
         self.center = new_position
 
-    def move_object(self, new_position: list | tuple, name: str = None):
+    def move_object(self, name: str = None, new_position: list | tuple = (0, 0)):
         """
         Перемещает объекты внутри системы координат, не перемещая её.
         В переменной new_position координаты, относительно системы координат self
@@ -313,7 +313,7 @@ def create_spring_line(length, coils, diameter, pos=(0, 0)):
     return np.array([x, y])
 
 
-def main():
+def test1():
     figure = plt.figure(figsize=(8, 8))
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[-15, 15], ylim=[-15, 15])
@@ -386,6 +386,103 @@ def main():
 
     _ = FuncAnimation(figure, frame, interval=1, frames=12000)
     plt.show()
+
+
+def test2():
+    figure = plt.figure(figsize=(8, 8))
+    ax = figure.add_subplot(1, 1, 1)
+    ax.set(xlim=[-15, 15], ylim=[-15, 15])
+
+    center1 = [0, 0]
+    s1 = CoordinateSystem(ax, *center1)
+    s2 = CoordinateSystem(ax, *center1)
+
+    t = sp.Symbol('t')
+    _time = np.linspace(0, 520, 10000)
+
+    X_T = 3 * sp.cos(0.1 * t)
+    Y_T = 4 * sp.sin(0.1 * t)
+    PHI_T = 180 * sp.cos(0.2 * t) - 90
+    F_X_T = sp.lambdify(t, X_T, "numpy")
+    F_Y_T = sp.lambdify(t, Y_T, "numpy")
+    F_PHI_T = sp.lambdify(t, PHI_T, "numpy")
+    X_T = F_X_T(_time)
+    Y_T = F_Y_T(_time)
+    PHI_T = F_PHI_T(_time)
+
+    ax.plot(X_T, Y_T, color=(0, 0, 0), lw=0.7)
+
+    distance1 = 2
+    point1 = ax.plot([0], [distance1], 'o')[0]
+    point2 = ax.plot([-distance1], [0], 'o')[0]
+    point3 = ax.plot([0], [-distance1], 'o')[0]
+    point4 = ax.plot([distance1], [0], 'o')[0]
+
+    line_width = 0.4
+    line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
+    line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+
+    s1.add("point1", point1)
+    s1.add("point2", point2)
+    s1.add("point3", point3)
+    s1.add("point4", point4)
+    s1.add("line_OY", line1)
+    s1.add("line_OX", line2)
+
+    distance2 = 1
+    point12 = ax.plot([0], [distance2], 'o')[0]
+    point22 = ax.plot([-distance2], [0], 'o')[0]
+    point32 = ax.plot([0], [-distance2], 'o')[0]
+    point42 = ax.plot([distance2], [0], 'o')[0]
+
+    line12 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
+    line22 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+
+    s2.add("point1", point12)
+    s2.add("point2", point22)
+    s2.add("point3", point32)
+    s2.add("point4", point42)
+
+    s2.add("line_OY", line12)
+    s2.add("line_OX", line22)
+
+    def frame(i):
+        coefficient = 13
+        value1 = distance1 * (np.cos(0.03 * (distance1 * 0 * coefficient + i)) ** 2)
+        value2 = distance1 * (np.cos(0.03 * (distance1 * 1 * coefficient + i)) ** 2)
+        value3 = distance1 * (np.cos(0.03 * (distance1 * 2 * coefficient + i)) ** 2)
+        value4 = distance1 * (np.cos(0.03 * (distance1 * 3 * coefficient + i)) ** 2)
+        s1.move_object("point1", [0, value1])
+        s1.move_object("point2", [-value2, 0])
+        s1.move_object("point3", [0, -value3])
+        s1.move_object("point4", [value4, 0])
+
+        coefficient = 13
+        value1 = distance2 * (np.cos(0.06 * (distance2 * 0 * coefficient + i)) ** 2)
+        value2 = distance2 * (np.cos(0.06 * (distance2 * 1 * coefficient + i)) ** 2)
+        value3 = distance2 * (np.cos(0.06 * (distance2 * 2 * coefficient + i)) ** 2)
+        value4 = distance2 * (np.cos(0.06 * (distance2 * 3 * coefficient + i)) ** 2)
+        s2.move_object("point1", [0, value1])
+        s2.move_object("point2", [-value2, 0])
+        s2.move_object("point3", [0, -value3])
+        s2.move_object("point4", [value4, 0])
+
+        s1.move([X_T[i], Y_T[i]])
+        s1.rotate_to_angle(PHI_T[i])
+
+        k = 0.05
+        s2.move([3 * np.cos(k * i), 4 * np.sin(k * i)])
+
+    _ = FuncAnimation(figure, frame, interval=1, frames=12000)
+    plt.show()
+
+
+def test3():
+    pass
+
+
+def main():
+    test2()
 
 
 if __name__ == "__main__":
