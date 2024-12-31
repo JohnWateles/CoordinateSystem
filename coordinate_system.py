@@ -34,7 +34,7 @@ class Spring:
 
 class CoordinateSystem:
     def __init__(self, ax=None, centerX=0, centerY=0, x_t=None, y_t=None, phi_t=None):
-        self.ax = ax    # График
+        self.ax = ax        # График
         self.x_t = x_t      # Закон движения системы координат по X
         self.y_t = y_t      # Закон движения системы координат по Y
         self.phi_t = phi_t  # Закон поворота системы координат
@@ -540,10 +540,10 @@ def test3():
 
     def frame(i):
         i = i % 10000
-        s1.move([X_T[i] + VX_T[i] + WX_T[i], 0])
-        s2.rotate_to_angle(PHI_T[i] + V_PHI_T[i] + W_PHI_T[i])
+        s1.move([X_T[i], 0])
+        s2.rotate_to_angle(PHI_T[i])
 
-        _spring_xy = create_spring_line(X_T[i] + VX_T[i] + WX_T[i] - rectangle_width // 2, 10, 0.4,
+        _spring_xy = create_spring_line(X_T[i] - rectangle_width // 2, 10, 0.4,
                                         pos=(0, rectangle_height / 2))
         spring.set_data(_spring_xy[0], _spring_xy[1])
 
