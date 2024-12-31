@@ -42,18 +42,24 @@ class CoordinateSystem:
         self.angle = 0
         self.object_names = dict()
         self.__last = ""
-        # self.objects = list()
-        # self.r_ts = list()
         if ax is None:
             raise ValueError(f"Параметр \"ax\" должен быть определён!")
         self.add(f"__CENTER__{id(self)}", ax.plot([centerX], [centerY], 'o')[0])
 
     @property
     def x(self):
+        """
+        Возвращает координату центра по оси Ox
+        :return:
+        """
         return self.center[0]
 
     @property
     def y(self):
+        """
+        Возвращает координату центра по оси Oy
+        :return:
+        """
         return self.center[1]
 
     @property
@@ -65,6 +71,15 @@ class CoordinateSystem:
         return self.object_names[self.__last][0]
 
     def add(self, name: str, any_object, x_t=None, y_t=None, phi_t=None):
+        """
+        Добавляет в систему объект (с его законами движение при необходимости)
+        :param name:
+        :param any_object:
+        :param x_t:
+        :param y_t:
+        :param phi_t:
+        :return:
+        """
         self.object_names[name] = (any_object, (x_t, y_t, phi_t))
         self.__last = name
         if isinstance(any_object, (plt.Rectangle, plt.Circle)):
@@ -172,8 +187,8 @@ class CoordinateSystem:
 
     def move_object(self, name: str = None, new_position: list | tuple = (0, 0)):
         """
-        Перемещает объекты внутри системы координат, не перемещая её.
-        В переменной new_position координаты, относительно системы координат self
+        Перемещает объект внутри системы координат, не перемещая её.
+        В переменной new_position координаты относительно системы координат self
         :param new_position:
         :param name:
         :return:
