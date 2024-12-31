@@ -67,8 +67,8 @@ class CoordinateSystem:
     def add(self, name: str, any_object, x_t=None, y_t=None, phi_t=None):
         self.object_names[name] = (any_object, (x_t, y_t, phi_t))
         self.__last = name
-        # self.objects.append(any_object)
-        # self.r_ts.append((x_t, y_t, phi_t))
+        if isinstance(any_object, (plt.Rectangle, plt.Circle)):
+            self.ax.add_patch(any_object)
 
     def rotate(self, angle, center=None):
         """
@@ -111,6 +111,9 @@ class CoordinateSystem:
                 obj.xy = self.__rot2d(x1, y1, angle, center)
                 curr_angle = obj.angle
                 obj.angle = curr_angle + angle * 180 / np.pi
+            elif isinstance(obj, plt.Circle):
+                x1, y1 = obj.center
+                obj.center = self.__rot2d(x1, y1, angle, center)
 
             elif isinstance(obj, CoordinateSystem):
                 obj.rotate(angle, center)
@@ -363,7 +366,7 @@ def test1():
 
     s1.add("rectangle1", plt.Rectangle([center[0] - 1, center[1]], width=2, height=1, color=(0.6, 0.6, 0.6)),
            X_T_relative, Y_T_relative)
-    ax.add_patch(s1.last)
+    # ax.add_patch(s1.last)
 
     spring_xy = create_spring_line(2, 10, 0.4, pos=(-side_x, center[1] + 0.5))
     s1.add("spring1", Spring(ax.plot(spring_xy[0], spring_xy[1], linewidth=1, color=(0, 0.5, 0.8))[0], "left", 2),
@@ -487,21 +490,33 @@ def test3():
     center2 = [length - rectangle_width // 2, rectangle_height]
     s1 = CoordinateSystem(ax, *center1)
     s2 = CoordinateSystem(ax, *center2)
-    # s2.angle = 270
     s1.add("cylinder_system", s2)
 
     rectangle = plt.Rectangle([length - rectangle_width, 0], width=rectangle_width, height=rectangle_height,
                               color=(0.6, 0.6, 0.6))
     s1.add("rectangle1", rectangle)
-    ax.add_patch(s1.last)
 
     white_circle = plt.Circle(center2, radius=rectangle_width // 2, color=(1, 1, 1))
     s1.add("white_circle", white_circle)
-    ax.add_patch(s1.last)
+
+    cylinder_radius = 0.4
+    cylinder = plt.Circle([center2[0], rectangle_height - (rectangle_width // 2) + cylinder_radius],
+                          radius=cylinder_radius, color=(0.8, 0.3, 0.1))
+    s2.add("cylinder1", cylinder)
+
+    spring_length = length - rectangle_width
+    spring_xy = create_spring_line(spring_length, 10, 0.4, pos=(0, rectangle_height / 2))
+    spring = ax.plot(spring_xy[0], spring_xy[1])[0]
 
     def frame(i):
-        # s1.move([np.sin(0.01 * i) + 2, np.cos(0.01 * i) + 1])
-        s1.move_object("white_circle", [np.sin(0.01 * i), np.cos(0.01 * i)])
+        coefficient = 0.04
+        X_T = 2 * (np.sin(coefficient * i) + 1) + 5
+        PHI_T = -80 * np.cos(coefficient * i) + 90
+        s1.move([X_T, 0])
+        s2.rotate_to_angle(PHI_T)
+
+        _spring_xy = create_spring_line(X_T - rectangle_width // 2, 10, 0.4, pos=(0, rectangle_height / 2))
+        spring.set_data(_spring_xy[0], _spring_xy[1])
         pass
 
     _ = FuncAnimation(figure, frame, interval=1, frames=12000)
