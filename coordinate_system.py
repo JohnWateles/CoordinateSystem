@@ -517,27 +517,34 @@ def test3():
     coefficient = 0.9
     X_T = 2 * (sp.sin(coefficient * t) + 1) + 5
     VX_T = sp.diff(X_T, t)
-    PHI_T = -70 * sp.cos(coefficient * t) + 90
+    WX_T = sp.diff(VX_T, t)
+    PHI_T = -80 * sp.cos(coefficient * t) + 90
     V_PHI_T = sp.diff(PHI_T, t)
+    W_PHI_T = sp.diff(V_PHI_T, t)
 
     F_X_T = sp.lambdify(t, X_T, "numpy")
     F_VX_T = sp.lambdify(t, VX_T, "numpy")
+    F_WX_T = sp.lambdify(t, WX_T, "numpy")
     F_PHI_T = sp.lambdify(t, PHI_T, "numpy")
     F_V_PHI_T = sp.lambdify(t, V_PHI_T, "numpy")
+    F_W_PHI_T = sp.lambdify(t, W_PHI_T, "numpy")
 
     _time = np.linspace(0, 520, 10000)
     X_T = F_X_T(_time)
     VX_T = F_VX_T(_time)
+    WX_T = F_WX_T(_time)
     PHI_T = F_PHI_T(_time)
     V_PHI_T = F_V_PHI_T(_time)
+    W_PHI_T = F_W_PHI_T(_time)
     ###
 
     def frame(i):
         i = i % 10000
-        s1.move([X_T[i] + VX_T[i], 0])
-        s2.rotate_to_angle(PHI_T[i] + V_PHI_T[i])
+        s1.move([X_T[i] + VX_T[i] + WX_T[i], 0])
+        s2.rotate_to_angle(PHI_T[i] + V_PHI_T[i] + W_PHI_T[i])
 
-        _spring_xy = create_spring_line(X_T[i] + VX_T[i] - rectangle_width // 2, 10, 0.4, pos=(0, rectangle_height / 2))
+        _spring_xy = create_spring_line(X_T[i] + VX_T[i] + WX_T[i] - rectangle_width // 2, 10, 0.4,
+                                        pos=(0, rectangle_height / 2))
         spring.set_data(_spring_xy[0], _spring_xy[1])
 
     _ = FuncAnimation(figure, frame, interval=1, frames=12000)
