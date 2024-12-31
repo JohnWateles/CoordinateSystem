@@ -483,6 +483,8 @@ def test3():
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[0, 15], ylim=[0, 15])
 
+    # Начальное расположение объектов, настройка зависимостей
+    ###
     length = 10
     rectangle_width = 6
     rectangle_height = 4
@@ -507,17 +509,36 @@ def test3():
     spring_length = length - rectangle_width
     spring_xy = create_spring_line(spring_length, 10, 0.4, pos=(0, rectangle_height / 2))
     spring = ax.plot(spring_xy[0], spring_xy[1])[0]
+    ###
+
+    # Вычисления:
+    ###
+    t = sp.Symbol("t")
+    coefficient = 0.9
+    X_T = 2 * (sp.sin(coefficient * t) + 1) + 5
+    VX_T = sp.diff(X_T, t)
+    PHI_T = -70 * sp.cos(coefficient * t) + 90
+    V_PHI_T = sp.diff(PHI_T, t)
+
+    F_X_T = sp.lambdify(t, X_T, "numpy")
+    F_VX_T = sp.lambdify(t, VX_T, "numpy")
+    F_PHI_T = sp.lambdify(t, PHI_T, "numpy")
+    F_V_PHI_T = sp.lambdify(t, V_PHI_T, "numpy")
+
+    _time = np.linspace(0, 520, 10000)
+    X_T = F_X_T(_time)
+    VX_T = F_VX_T(_time)
+    PHI_T = F_PHI_T(_time)
+    V_PHI_T = F_V_PHI_T(_time)
+    ###
 
     def frame(i):
-        coefficient = 0.04
-        X_T = 2 * (np.sin(coefficient * i) + 1) + 5
-        PHI_T = -80 * np.cos(coefficient * i) + 90
-        s1.move([X_T, 0])
-        s2.rotate_to_angle(PHI_T)
+        i = i % 10000
+        s1.move([X_T[i] + VX_T[i], 0])
+        s2.rotate_to_angle(PHI_T[i] + V_PHI_T[i])
 
-        _spring_xy = create_spring_line(X_T - rectangle_width // 2, 10, 0.4, pos=(0, rectangle_height / 2))
+        _spring_xy = create_spring_line(X_T[i] + VX_T[i] - rectangle_width // 2, 10, 0.4, pos=(0, rectangle_height / 2))
         spring.set_data(_spring_xy[0], _spring_xy[1])
-        pass
 
     _ = FuncAnimation(figure, frame, interval=1, frames=12000)
     plt.show()

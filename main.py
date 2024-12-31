@@ -1,9 +1,8 @@
+from coordinate_system import test3
+
+
 def main():
-    string_ru1 = ...
-    string_ru2 = "я"
-    # print(not string_ru1)
-    if string_ru1:
-        print(12431231231231231231231231123123123123123123123123)
+    test3()
 
 
 if __name__ == "__main__":
