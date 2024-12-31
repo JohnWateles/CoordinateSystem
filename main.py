@@ -1,7 +1,9 @@
 def main():
-    string_ru1 = "а"
+    string_ru1 = ...
     string_ru2 = "я"
-    print(ord(string_ru2) - ord(string_ru1))
+    # print(not string_ru1)
+    if string_ru1:
+        print(12431231231231231231231231123123123123123123123123)
 
 
 if __name__ == "__main__":

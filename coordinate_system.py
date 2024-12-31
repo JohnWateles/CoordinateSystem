@@ -146,11 +146,12 @@ class CoordinateSystem:
                     x.append(x_i + new_position[0] - self.center[0])
                     y.append(y_i + new_position[1] - self.center[1])
                 obj.set_data(x, y)
-
             elif isinstance(obj, plt.Rectangle):
                 x1, y1 = obj.xy
                 obj.xy = x1 + new_position[0] - self.center[0], y1 + new_position[1] - self.center[1]
-
+            elif isinstance(obj, plt.Circle):
+                x1, y1 = obj.center
+                obj.center = x1 + new_position[0] - self.center[0], y1 + new_position[1] - self.center[1]
             elif isinstance(obj, Spring):
                 spring = obj.spring
                 x = list()
@@ -159,7 +160,6 @@ class CoordinateSystem:
                     x.append(x_i + new_position[0] - self.center[0])
                     y.append(y_i + new_position[1] - self.center[1])
                 spring.set_data(x, y)
-
             elif isinstance(obj, CoordinateSystem):
                 new_x = obj.x + new_position[0] - self.center[0]
                 new_y = obj.y + new_position[1] - self.center[1]
@@ -182,22 +182,18 @@ class CoordinateSystem:
             return
         obj = self.object_names[name][0]
         if isinstance(obj, mat_lines.Line2D):
-            # if index == 0 and len(obj.get_data()[0]) == 1:
-            #     return
             if name == f"__CENTER__{id(self)}":
                 return
             x = list()
             y = list()
-            # print(obj.get_data())
             for x_i, y_i in zip(obj.get_data()[0], obj.get_data()[1]):
                 x.append(self.center[0] + new_position[0])
                 y.append(self.center[1] + new_position[1])
-            # self.ax.plot(x, y, linewidth=2, color=(0, 0, 0))
             obj.set_data(x, y)
-            # print(obj.get_data())
         elif isinstance(obj, plt.Rectangle):
-            # x1, y1 = obj.xy
             obj.xy = self.center[0] + new_position[0], self.center[1] + new_position[1]
+        elif isinstance(obj, plt.Circle):
+            obj.center = self.center[0] + new_position[0], self.center[1] + new_position[1]
         elif isinstance(obj, Spring):
             spring = obj.spring
             x = list()
@@ -209,8 +205,8 @@ class CoordinateSystem:
         elif isinstance(obj, CoordinateSystem):
             # BAD!!!
             obj.move(new_position)
-        # self.center = new_position
 
+    # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ!
     def __move_object(self, new_position: list | tuple, obj):
         """
         То же самое, что и move_object, только передаётся объект.
@@ -231,6 +227,8 @@ class CoordinateSystem:
             obj.set_data(x, y)
         elif isinstance(obj, plt.Rectangle):
             obj.xy = self.center[0] + new_position[0], self.center[1] + new_position[1]
+        elif isinstance(obj, plt.Circle):
+            obj.center = self.center[0] + new_position[0], self.center[1] + new_position[1]
         elif isinstance(obj, Spring):
             spring = obj.spring
             x = list()
@@ -478,11 +476,40 @@ def test2():
 
 
 def test3():
-    pass
+    figure = plt.figure(figsize=(8, 8))
+    ax = figure.add_subplot(1, 1, 1)
+    ax.set(xlim=[0, 15], ylim=[0, 15])
+
+    length = 10
+    rectangle_width = 6
+    rectangle_height = 4
+    center1 = [length - rectangle_width // 2, 0]
+    center2 = [length - rectangle_width // 2, rectangle_height]
+    s1 = CoordinateSystem(ax, *center1)
+    s2 = CoordinateSystem(ax, *center2)
+    # s2.angle = 270
+    s1.add("cylinder_system", s2)
+
+    rectangle = plt.Rectangle([length - rectangle_width, 0], width=rectangle_width, height=rectangle_height,
+                              color=(0.6, 0.6, 0.6))
+    s1.add("rectangle1", rectangle)
+    ax.add_patch(s1.last)
+
+    white_circle = plt.Circle(center2, radius=rectangle_width // 2, color=(1, 1, 1))
+    s1.add("white_circle", white_circle)
+    ax.add_patch(s1.last)
+
+    def frame(i):
+        # s1.move([np.sin(0.01 * i) + 2, np.cos(0.01 * i) + 1])
+        s1.move_object("white_circle", [np.sin(0.01 * i), np.cos(0.01 * i)])
+        pass
+
+    _ = FuncAnimation(figure, frame, interval=1, frames=12000)
+    plt.show()
 
 
 def main():
-    test2()
+    test3()
 
 
 if __name__ == "__main__":
