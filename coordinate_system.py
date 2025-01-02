@@ -45,7 +45,10 @@ class CoordinateSystem:
         if ax is None:
             raise ValueError(f"Параметр \"ax\" должен быть определён!")
         if show_center:
-            self.add(f"__CENTER__{id(self)}", ax.plot([center[0]], [center[1]], 'o')[0])
+            self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]], 'o')[0])
+        else:
+            self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]])[0])
+            # Центр должен быть, иначе неправильно работают методы rotate_to_angle() и move_object()
 
     @property
     def x(self):
@@ -201,7 +204,7 @@ class CoordinateSystem:
             return
         obj = self.object_names[name][0]
         if isinstance(obj, mat_lines.Line2D):
-            if name == f"__CENTER__{id(self)}":
+            if name == f"__CENTER__OF_{repr(self)}":
                 return
             x = list()
             y = list()
@@ -222,8 +225,9 @@ class CoordinateSystem:
                 y.append(self.center[1] + new_position[1])
             spring.set_data(x, y)
         elif isinstance(obj, CoordinateSystem):
-            # BAD!!!
-            obj.move(new_position)
+            new_x = self.center[0] + new_position[0]
+            new_y = self.center[1] + new_position[1]
+            obj.move([new_x, new_y])
 
     # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ! (метод нужен для test1())
     def __move_object(self, new_position: list | tuple, obj):
@@ -325,6 +329,14 @@ class CoordinateSystem:
 
 
 def create_spring_line(length, coils, diameter, pos=(0, 0)):
+    """
+    Создаёт пружину по координатам pos
+    :param length:
+    :param coils:
+    :param diameter:
+    :param pos:
+    :return:
+    """
     x = np.linspace(0 + pos[0], length + pos[0], coils * 2)
     y = [(diameter * 0.5 * (-1) ** i) + pos[1] for i in range(len(x))]
     return np.array([x, y])
@@ -566,8 +578,84 @@ def test3():
     plt.show()
 
 
+def test4():
+    figure = plt.figure(figsize=(8, 8))
+    ax = figure.add_subplot(1, 1, 1)
+    ax.set(xlim=[0, 15], ylim=[0, 15])
+
+    show_center = False
+    s1 = CoordinateSystem(ax, (4.5, 2.5), show_center=show_center)
+    s1.add("rec1", plt.Rectangle((2, 1), width=5, height=3, color=(1, 0.5, 0.75)))
+    s1.add("rec2", plt.Rectangle((6, 3), width=1.7, height=1.7, color=(0.9, 0.4, 0.67)))
+    x = 6
+    y = 3
+    s1.add("rec3", plt.Rectangle((x + 0.1, y + 0.1), width=1.5, height=1.5, color=(0.9, 0.9, 0.9)))
+    s1.add("rec4", plt.Rectangle((x + 0.1, y + 0.7), width=1.5, height=0.65, color=(218 / 255,
+                                                                                    189 / 255,
+                                                                                    179 / 255)))
+    s1.add("rec5", plt.Rectangle((x + 0.1 + 0.25, y + 0.1), width=1, height=0.65, color=(218 / 255,
+                                                                                         189 / 255,
+                                                                                         179 / 255)))
+    s1.add("rec6", plt.Rectangle((x + 0.1 + 0.25 + 0.198, y + 0.1), width=0.60, height=0.60, color=(0.9, 0.65, 0.65)))
+    s1.add("rec7", plt.Rectangle((x + 1.5 - 0.3, y + 1.5 - 0.5), width=0.3, height=0.15, color=(0, 0, 0)))
+    s1.add("rec8", plt.Rectangle((x + 1.5 - 0.3, y + 1.5 - 0.5), width=0.14, height=0.15, color=(1, 1, 1)))
+    s1.add("rec9", plt.Rectangle((x + 1.5 - 1.3, y + 1.5 - 0.5), width=0.3, height=0.15, color=(0, 0, 0)))
+    s1.add("rec10", plt.Rectangle((x + 1.5 - 1.13, y + 1.5 - 0.5), width=0.15, height=0.15, color=(1, 1, 1)))
+    s1.add("rec11", plt.Rectangle((2, 0), width=0.5, height=1.5, color=(218 / 255,
+                                                                        189 / 255,
+                                                                        179 / 255)))
+    s1.add("rec12", plt.Rectangle((2 + 4.5, 0), width=0.5, height=1.5, color=(218 / 255,
+                                                                              189 / 255,
+                                                                              179 / 255)))
+
+    distance = 0.07
+    stick_height = 0.2
+    border_height = 2
+    white_space = plt.Rectangle((0, 2.5 - distance), width=3 + distance, height=(2 * distance) + stick_height,
+                                color=(1, 1, 1))
+    stick = plt.Rectangle((0, 2.5), width=3, height=stick_height, color=(0, 0, 0))
+    border = plt.Rectangle((0, 2.5 - (border_height / 2) + (stick_height / 2)), width=0.2, height=border_height, color=(0, 0, 0))
+
+    s2 = CoordinateSystem(ax, (0 + 0.1, 2.5 + stick_height / 2), show_center=show_center)
+    s2.add("white_space", white_space)
+    s2.add("stick", stick)
+    s2.add("border", border)
+
+    s1.add("s2", s2)
+
+    s3 = CoordinateSystem(ax, show_center=show_center)
+    s3.add("s1", s1)
+
+    coefficient = 0.8
+    t = sp.Symbol("t")
+    PHI_T = 360 * sp.sin(0.2 * coefficient * t) ** 1
+    X_T = 0.5 * (6 * sp.cos(coefficient * t) - 2 * sp.sin(coefficient * t) + sp.sin(coefficient * t) ** 2) + 4
+    Y_T = 0.5 * (X_T * sp.sin(coefficient * t)) + 5
+
+    PHI_T = sp.lambdify(t, PHI_T, "numpy")
+    X_T = sp.lambdify(t, X_T, "numpy")
+    Y_T = sp.lambdify(t, Y_T, "numpy")
+
+    _time = np.linspace(0, 520, 10000)
+    PHI_T = PHI_T(_time)
+    X_T = X_T(_time)
+    Y_T = Y_T(_time)
+
+    # ax.plot(X_T, Y_T, lw=0.8)
+
+    def frame(i):
+        i = i % 10000
+        s3.move([X_T[i], Y_T[i]])
+        s1.rotate_to_angle(PHI_T[i])
+        s1.move_object("s2", [np.sin(0.5 * i) - 3.8, 0])
+
+    _ = FuncAnimation(figure, frame, interval=1, frames=12000)
+    plt.show()
+    pass
+
+
 def main():
-    test2()
+    test4()
 
 
 if __name__ == "__main__":
