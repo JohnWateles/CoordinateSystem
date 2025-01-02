@@ -225,7 +225,7 @@ class CoordinateSystem:
             # BAD!!!
             obj.move(new_position)
 
-    # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ!
+    # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ! (метод нужен для test1())
     def __move_object(self, new_position: list | tuple, obj):
         """
         То же самое, что и move_object, только передаётся объект.
@@ -260,7 +260,7 @@ class CoordinateSystem:
         elif isinstance(obj, CoordinateSystem):
             obj.move(new_position)
 
-    # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ!
+    # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ! (метод нужен для test1())
     def frame(self, i):
         for index, name_obj in enumerate(self.object_names):
             obj = self.object_names[name_obj][0]
@@ -427,7 +427,7 @@ def test2():
     Y_T = F_Y_T(_time)
     PHI_T = F_PHI_T(_time)
 
-    ax.plot(X_T, Y_T, color=(0, 0, 0), lw=0.7)
+    ax.plot(X_T, Y_T, color=(0, 0, 0), lw=0.7)  # Траектория движения
 
     distance1 = 2
     point1 = ax.plot([0], [distance1], 'o')[0]
@@ -459,7 +459,6 @@ def test2():
     s2.add("point2", point22)
     s2.add("point3", point32)
     s2.add("point4", point42)
-
     s2.add("line_OY", line12)
     s2.add("line_OX", line22)
 
@@ -568,7 +567,7 @@ def test3():
 
 
 def main():
-    test3()
+    test2()
 
 
 if __name__ == "__main__":
