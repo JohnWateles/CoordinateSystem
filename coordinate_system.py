@@ -33,18 +33,19 @@ class Spring:
 
 
 class CoordinateSystem:
-    def __init__(self, ax=None, centerX=0, centerY=0, x_t=None, y_t=None, phi_t=None):
+    def __init__(self, ax=None, center=(0, 0), x_t=None, y_t=None, phi_t=None, show_center=True):
         self.ax = ax        # График
         self.x_t = x_t      # Закон движения системы координат по X
         self.y_t = y_t      # Закон движения системы координат по Y
         self.phi_t = phi_t  # Закон поворота системы координат
-        self.center = centerX, centerY
+        self.center = center
         self.angle = 0
         self.object_names = dict()
         self.__last = ""
         if ax is None:
             raise ValueError(f"Параметр \"ax\" должен быть определён!")
-        self.add(f"__CENTER__{id(self)}", ax.plot([centerX], [centerY], 'o')[0])
+        if show_center:
+            self.add(f"__CENTER__{id(self)}", ax.plot([center[0]], [center[1]], 'o')[0])
 
     @property
     def x(self):
@@ -65,7 +66,7 @@ class CoordinateSystem:
     @property
     def last(self):
         """
-        Возвращает последний добавленный в систему объект
+        Возвращает имя последнего добавленного в систему объекта
         :return:
         """
         return self.object_names[self.__last][0]
@@ -334,7 +335,7 @@ def test1():
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[-15, 15], ylim=[-15, 15])
     center = [0, 7]
-    s1 = CoordinateSystem(ax, *center)
+    s1 = CoordinateSystem(ax, center)
     side_x = 3
     s1.add("line1", ax.plot([-side_x, side_x], [center[1], center[1]], linewidth=2, color=(0, 0, 0))[0])
     s1.add("line2", ax.plot([-side_x, -side_x], [center[1], center[1] + 1], linewidth=2, color=(0, 0, 0))[0])
@@ -391,7 +392,7 @@ def test1():
            X_T_relative, Y_T_relative)
 
     center2 = [0, 0]
-    s = CoordinateSystem(ax, *center2)
+    s = CoordinateSystem(ax, center2)
     s.add("line", ax.plot([center2[0], center2[0]], [center2[0], center[1]], linewidth=2, color=(0, 0, 0))[0])
     s.add("CoordinateSystem1", s1)
     s.phi_t = PHI_T_VALUES
@@ -410,8 +411,8 @@ def test2():
     ax.set(xlim=[-15, 15], ylim=[-15, 15])
 
     center1 = [0, 0]
-    s1 = CoordinateSystem(ax, *center1)
-    s2 = CoordinateSystem(ax, *center1)
+    s1 = CoordinateSystem(ax, center1)
+    s2 = CoordinateSystem(ax, center1)
 
     t = sp.Symbol('t')
     _time = np.linspace(0, 520, 10000)
@@ -505,8 +506,8 @@ def test3():
     rectangle_height = 4
     center1 = [length - rectangle_width // 2, 0]
     center2 = [length - rectangle_width // 2, rectangle_height]
-    s1 = CoordinateSystem(ax, *center1)
-    s2 = CoordinateSystem(ax, *center2)
+    s1 = CoordinateSystem(ax, center1, show_center=False)
+    s2 = CoordinateSystem(ax, center2, show_center=False)
     s1.add("cylinder_system", s2)
 
     rectangle = plt.Rectangle([length - rectangle_width, 0], width=rectangle_width, height=rectangle_height,
