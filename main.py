@@ -1,8 +1,8 @@
-from coordinate_system import test3
+from coordinate_system import test3 as test
 
 
 def main():
-    test3()
+    test()
 
 
 if __name__ == "__main__":
