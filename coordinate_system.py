@@ -623,14 +623,11 @@ def test4():
 
     s1.add("s2", s2)
 
-    s3 = CoordinateSystem(ax, show_center=show_center)
-    s3.add("s1", s1)
-
     coefficient = 0.8
     t = sp.Symbol("t")
     PHI_T = 360 * sp.sin(0.2 * coefficient * t) ** 1
-    X_T = 0.5 * (6 * sp.cos(coefficient * t) - 2 * sp.sin(coefficient * t) + sp.sin(coefficient * t) ** 2) + 4
-    Y_T = 0.5 * (X_T * sp.sin(coefficient * t)) + 5
+    X_T = 0.7 * (6 * sp.cos(coefficient * t) - 2 * sp.sin(coefficient * t) + sp.sin(coefficient * t) ** 2) + 7
+    Y_T = 0.5 * (X_T * sp.sin(coefficient * t)) + 8
 
     PHI_T = sp.lambdify(t, PHI_T, "numpy")
     X_T = sp.lambdify(t, X_T, "numpy")
@@ -641,17 +638,16 @@ def test4():
     X_T = X_T(_time)
     Y_T = Y_T(_time)
 
-    # ax.plot(X_T, Y_T, lw=0.8)
+    ax.plot(X_T, Y_T, lw=0.8)
 
     def frame(i):
         i = i % 10000
-        s3.move([X_T[i], Y_T[i]])
+        s1.move([X_T[i], Y_T[i]])
         s1.rotate_to_angle(PHI_T[i])
         s1.move_object("s2", [np.sin(0.5 * i) - 3.8, 0])
 
     _ = FuncAnimation(figure, frame, interval=1, frames=12000)
     plt.show()
-    pass
 
 
 def main():
