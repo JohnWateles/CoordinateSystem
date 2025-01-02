@@ -6,6 +6,9 @@ import matplotlib.lines as mat_lines
 
 
 class Spring:
+    """
+    Попытка нормально анимировать пружины
+    """
     def __init__(self, spring, name, length, pos=(0, 0)):
         self.spring = spring
         self.name = name
@@ -35,9 +38,9 @@ class Spring:
 class CoordinateSystem:
     def __init__(self, ax=None, center=(0, 0), x_t=None, y_t=None, phi_t=None, show_center=True):
         self.ax = ax        # График
-        self.x_t = x_t      # Закон движения системы координат по X
-        self.y_t = y_t      # Закон движения системы координат по Y
-        self.phi_t = phi_t  # Закон поворота системы координат
+        self.x_t = x_t      # Закон движения системы координат по X (мб удалить это)
+        self.y_t = y_t      # Закон движения системы координат по Y (мб удалить это)
+        self.phi_t = phi_t  # Закон поворота системы координат      (мб удалить это)
         self.center = center
         self.angle = 0
         self.object_names = dict()
@@ -47,7 +50,7 @@ class CoordinateSystem:
         if show_center:
             self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]], 'o')[0])
         else:
-            self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]])[0])
+            self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]], color=(0, 0, 0))[0])
             # Центр должен быть, иначе неправильно работают методы rotate_to_angle() и move_object()
 
     @property
@@ -73,6 +76,9 @@ class CoordinateSystem:
         :return:
         """
         return self.object_names[self.__last][0]
+
+    def get_object(self, name: str):
+        return self.object_names[name][0]
 
     def add(self, name: str, any_object, x_t=None, y_t=None, phi_t=None):
         """
@@ -265,7 +271,7 @@ class CoordinateSystem:
             obj.move(new_position)
 
     # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ! (метод нужен для test1())
-    def frame(self, i):
+    def _frame(self, i):
         for index, name_obj in enumerate(self.object_names):
             obj = self.object_names[name_obj][0]
             r_t = self.object_names[name_obj][1]
@@ -307,7 +313,7 @@ class CoordinateSystem:
                 y = r_t[1][i] if r_t[1][i] is not None else 0
                 self.__move_object([x, y], obj)
             elif isinstance(obj, CoordinateSystem):
-                obj.frame(i)
+                obj._frame(i)
 
         if self.x_t is not None:
             self.move([self.x_t[i], self.y])
@@ -410,7 +416,7 @@ def test1():
     s.phi_t = PHI_T_VALUES
 
     def frame(i):
-        s.frame(i)
+        s._frame(i)
         pass
 
     _ = FuncAnimation(figure, frame, interval=1, frames=12000)
@@ -638,13 +644,28 @@ def test4():
     X_T = X_T(_time)
     Y_T = Y_T(_time)
 
-    ax.plot(X_T, Y_T, lw=0.8)
+    # ax.plot(X_T, Y_T, lw=0.8)
 
     def frame(i):
         i = i % 10000
         s1.move([X_T[i], Y_T[i]])
         s1.rotate_to_angle(PHI_T[i])
         s1.move_object("s2", [np.sin(0.5 * i) - 3.8, 0])
+
+    _ = FuncAnimation(figure, frame, interval=1, frames=12000)
+    plt.show()
+
+
+def test5():
+    figure = plt.figure(figsize=(8, 8))
+    g = figure.add_subplot(1, 1, 1)
+    g.set(xlim=[0, 15], ylim=[0, 15])
+
+    s1 = CoordinateSystem(g, show_center=False)
+    g.plot([3, 2], [1, 2])
+
+    def frame(i):
+        pass
 
     _ = FuncAnimation(figure, frame, interval=1, frames=12000)
     plt.show()
