@@ -667,7 +667,7 @@ def test5():
     def frame(i):
         pass
 
-    _ = FuncAnimation(figure, frame, interval=1, frames=12000)
+    _ = FuncAnimation(figure, frame, interval=1, frames=12000, blit=True)
     plt.show()
 
 
