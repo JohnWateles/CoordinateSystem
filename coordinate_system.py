@@ -36,11 +36,8 @@ class Spring:
 
 
 class CoordinateSystem:
-    def __init__(self, ax=None, center=(0, 0), x_t=None, y_t=None, phi_t=None, show_center=True):
-        self.ax = ax        # График
-        self.x_t = x_t      # Закон движения системы координат по X (мб удалить это)
-        self.y_t = y_t      # Закон движения системы координат по Y (мб удалить это)
-        self.phi_t = phi_t  # Закон поворота системы координат      (мб удалить это)
+    def __init__(self, ax=None, center=(0, 0), show_center=True):
+        self.ax = ax
         self.center = center
         self.angle = 0
         self.object_names = dict()
@@ -80,17 +77,14 @@ class CoordinateSystem:
     def get_object(self, name: str):
         return self.object_names[name][0]
 
-    def add(self, name: str, any_object, x_t=None, y_t=None, phi_t=None):
+    def add(self, name: str, any_object):
         """
         Добавляет в систему объект (с его законами движение при необходимости)
         :param name:
         :param any_object:
-        :param x_t:
-        :param y_t:
-        :param phi_t:
         :return:
         """
-        self.object_names[name] = (any_object, (x_t, y_t, phi_t))
+        self.object_names[name] = (any_object, )
         self.__last = name
         if isinstance(any_object, (plt.Rectangle, plt.Circle)):
             self.ax.add_patch(any_object)
@@ -106,7 +100,6 @@ class CoordinateSystem:
         angle = angle % (2 * np.pi)
         if center is None:
             center = self.center
-
         for index, name_obj in enumerate(self.object_names):
             obj = self.object_names[name_obj][0]
             if isinstance(obj, Spring):
@@ -118,11 +111,9 @@ class CoordinateSystem:
                     x.append(new_x)
                     y.append(new_y)
                 spring.set_data(x, y)
-
             elif isinstance(obj, mat_lines.Line2D):
                 x = list()
                 y = list()
-
                 for x_i, y_i in zip(obj.get_data()[0], obj.get_data()[1]):
                     new_x, new_y = self.__rot2d(x_i, y_i, angle, center)
                     x.append(new_x)
@@ -130,7 +121,6 @@ class CoordinateSystem:
                     if index == 0:
                         self.center = new_x, new_y
                 obj.set_data(x, y)
-
             elif isinstance(obj, plt.Rectangle):
                 x1, y1 = obj.xy
                 obj.xy = self.__rot2d(x1, y1, angle, center)
@@ -139,7 +129,6 @@ class CoordinateSystem:
             elif isinstance(obj, plt.Circle):
                 x1, y1 = obj.center
                 obj.center = self.__rot2d(x1, y1, angle, center)
-
             elif isinstance(obj, CoordinateSystem):
                 obj.rotate(angle, center)
         self.angle += angle
@@ -235,103 +224,13 @@ class CoordinateSystem:
             new_y = self.center[1] + new_position[1]
             obj.move([new_x, new_y])
 
-    # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ! (метод нужен для test1())
-    def __move_object(self, new_position: list | tuple, obj):
-        """
-        То же самое, что и move_object, только передаётся объект.
-        :param new_position:
-        :param obj:
-        :return:
-        """
-        new_x = new_position[0] * np.cos(self.angle) - new_position[1] * np.sin(self.angle)
-        new_y = new_position[0] * np.sin(self.angle) + new_position[1] * np.cos(self.angle)
-        new_position = [new_x, new_y]
-
-        if isinstance(obj, mat_lines.Line2D):
-            x = list()
-            y = list()
-            for x_i, y_i in zip(obj.get_data()[0], obj.get_data()[1]):
-                x.append(self.center[0] + new_position[0])
-                y.append(self.center[1] + new_position[1])
-            obj.set_data(x, y)
-        elif isinstance(obj, plt.Rectangle):
-            obj.xy = self.center[0] + new_position[0], self.center[1] + new_position[1]
-        elif isinstance(obj, plt.Circle):
-            obj.center = self.center[0] + new_position[0], self.center[1] + new_position[1]
-        elif isinstance(obj, Spring):
-            spring = obj.spring
-            x = list()
-            y = list()
-            sign = 1 if obj.name == "left" else -1
-            for x_i, y_i in zip(spring.get_data()[0], spring.get_data()[1]):
-                x.append(self.center[0] + new_position[0] + sign * x_i)
-                y.append(self.center[1] + new_position[1] + sign * y_i)
-            spring.set_data(x, y)
-        elif isinstance(obj, CoordinateSystem):
-            obj.move(new_position)
-
-    # ИЗМЕНИТЬ МЕТОД ПРИ НЕОБХОДИМОСТИ! (метод нужен для test1())
-    def _frame(self, i):
-        for index, name_obj in enumerate(self.object_names):
-            obj = self.object_names[name_obj][0]
-            r_t = self.object_names[name_obj][1]
-
-            if isinstance(obj, mat_lines.Line2D):
-                x = list()
-                y = list()
-                for x_i, y_i in zip(obj.get_data()[0], obj.get_data()[1]):
-                    pass
-                # obj.set_data(x, y)
-            elif isinstance(obj, Spring):
-                if obj.name == "left":
-                    sp_xy = create_spring_line(obj.length + r_t[0][i] + 1, 10, 0.4)
-
-                    x = list()
-                    y = list()
-                    for x_i, y_i in zip(sp_xy[0], sp_xy[1]):
-                        new_x, new_y = self.__rot2d(x_i, y_i, self.angle, (0, 0))
-                        x.append(new_x)
-                        y.append(new_y)
-
-                    obj.spring.set_data(x, y)
-                    self.__move_object([-3, 0.5], obj)
-                elif obj.name == "right":
-                    sp_xy = create_spring_line(obj.length - r_t[0][i] - 1, 10, 0.4)
-                    x = list()
-                    y = list()
-                    for x_i, y_i in zip(sp_xy[0], sp_xy[1]):
-                        new_x, new_y = self.__rot2d(x_i, y_i, self.angle, (0, 0))
-                        x.append(new_x)
-                        y.append(new_y)
-
-                    obj.spring.set_data(x, y)
-                    self.__move_object([3, 0.5], obj)
-
-            elif isinstance(obj, plt.Rectangle):
-                # x, y = obj.xy
-                x = r_t[0][i] if r_t[0][i] is not None else 0
-                y = r_t[1][i] if r_t[1][i] is not None else 0
-                self.__move_object([x, y], obj)
-            elif isinstance(obj, CoordinateSystem):
-                obj._frame(i)
-
-        if self.x_t is not None:
-            self.move([self.x_t[i], self.y])
-
-        if self.y_t is not None:
-            self.move([self.x, self.y_t[i]])
-
-        if self.phi_t is not None:
-            self.rotate_to_angle(self.phi_t[i])
-            pass
-
-    def __rot2d(self, x_arg, y_arg, any_phi_arg, sc=None):
-        if sc is None:
-            sc = self.center
-        phi_arg = any_phi_arg % (2 * np.pi)
-        RX = np.cos(phi_arg) * (x_arg - sc[0]) - np.sin(phi_arg) * (y_arg - sc[1]) + sc[0]
-        RY = np.sin(phi_arg) * (x_arg - sc[0]) + np.cos(phi_arg) * (y_arg - sc[1]) + sc[1]
-        return RX, RY
+    def __rot2d(self, _x_, _y_, _phi_, center=None):
+        if center is None:
+            center = self.center
+        _phi_ = _phi_ % (2 * np.pi)
+        _new_x_ = np.cos(_phi_) * (_x_ - center[0]) - np.sin(_phi_) * (_y_ - center[1]) + center[0]
+        _new_y_ = np.sin(_phi_) * (_x_ - center[0]) + np.cos(_phi_) * (_y_ - center[1]) + center[1]
+        return _new_x_, _new_y_
 
 
 def create_spring_line(length, coils, diameter, pos=(0, 0)):
@@ -350,76 +249,17 @@ def create_spring_line(length, coils, diameter, pos=(0, 0)):
 
 def test1():
     figure = plt.figure(figsize=(8, 8))
-    ax = figure.add_subplot(1, 1, 1)
-    ax.set(xlim=[-15, 15], ylim=[-15, 15])
-    center = [0, 7]
-    s1 = CoordinateSystem(ax, center)
-    side_x = 3
-    s1.add("line1", ax.plot([-side_x, side_x], [center[1], center[1]], linewidth=2, color=(0, 0, 0))[0])
-    s1.add("line2", ax.plot([-side_x, -side_x], [center[1], center[1] + 1], linewidth=2, color=(0, 0, 0))[0])
-    s1.add("line3", ax.plot([side_x, side_x], [center[1], center[1] + 1], linewidth=2, color=(0, 0, 0))[0])
+    g = figure.add_subplot(1, 1, 1)
+    g.set(xlim=[0, 15], ylim=[0, 15])
 
-    t = sp.Symbol('t')
-    X_T_relative = 1 * (sp.sin(1 * t) - 1)
-    Y_T_relative = 0.00000001 * sp.sin(t)
-    # VX_T_relative = sp.diff(X_T_relative, t)
-
-    _time = np.linspace(0, 520, 10000)
-    F_X_T_relative = sp.lambdify(t, X_T_relative, "numpy")
-    F_Y_T_relative = sp.lambdify(t, Y_T_relative, "numpy")
-    # F_VX_T_relative = sp.lambdify(t, VX_T_relative, "numpy")
-    X_T_relative = F_X_T_relative(_time)
-    Y_T_relative = F_Y_T_relative(_time)
-    # VX_T_relative = F_VX_T_relative(_time)
-
-    # for index, value in enumerate(VX_T_relative):
-    #     X_T_relative[index] -= value
-
-    length = center[1] - center[0]
-    PHI_T = 90 * sp.sin(0.2 * t) + 90
-
-    X_T_endure = 0.5 * sp.cos(PHI_T * (sp.pi / 180))
-    Y_T_endure = 0.5 * sp.sin(PHI_T * (sp.pi / 180))
-    F_X_T_endure = sp.lambdify(t, X_T_endure, "numpy")
-    F_Y_T_endure = sp.lambdify(t, Y_T_endure, "numpy")
-    X_T_endure = F_X_T_endure(_time)
-    Y_T_endure = F_Y_T_endure(_time)
-
-    for index, values in enumerate(zip(X_T_endure, Y_T_endure)):
-        value_x, value_y = values
-        X_T_relative[index] += value_x - value_y
-
-    # PHI_T = 0.000000000000000001 * sp.sin(t)
-    # V_PHI_T = sp.diff(PHI_T)
-    # X_T_endure = sp.sin(PHI_T)
-    # Y_T_endure = sp.cos(PHI_T)
-    F_PHI_T = sp.lambdify(t, PHI_T, "numpy")
-    # F_V_PHI_T = sp.lambdify(t, V_PHI_T, "numpy")
-    PHI_T_VALUES = F_PHI_T(_time)
-    # V_PHI_T_VALUES = F_V_PHI_T(_time)
-
-    s1.add("rectangle1", plt.Rectangle([center[0] - 1, center[1]], width=2, height=1, color=(0.6, 0.6, 0.6)),
-           X_T_relative, Y_T_relative)
-    # ax.add_patch(s1.last)
-
-    spring_xy = create_spring_line(2, 10, 0.4, pos=(-side_x, center[1] + 0.5))
-    s1.add("spring1", Spring(ax.plot(spring_xy[0], spring_xy[1], linewidth=1, color=(0, 0.5, 0.8))[0], "left", 2),
-           X_T_relative, Y_T_relative)
-    spring_xy = create_spring_line(2, 10, 0.4, pos=(center[0] + 1, center[1] + 0.5))
-    s1.add("spring2", Spring(ax.plot(spring_xy[0], spring_xy[1], linewidth=1, color=(0, 0.5, 0.8))[0], "right", 2),
-           X_T_relative, Y_T_relative)
-
-    center2 = [0, 0]
-    s = CoordinateSystem(ax, center2)
-    s.add("line", ax.plot([center2[0], center2[0]], [center2[0], center[1]], linewidth=2, color=(0, 0, 0))[0])
-    s.add("CoordinateSystem1", s1)
-    s.phi_t = PHI_T_VALUES
+    s1 = CoordinateSystem(g, show_center=False)
+    g.plot([3, 2], [1, 2])
+    # Доделать
 
     def frame(i):
-        s._frame(i)
         pass
 
-    _ = FuncAnimation(figure, frame, interval=1, frames=12000)
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
 
 
@@ -435,9 +275,9 @@ def test2():
     t = sp.Symbol('t')
     _time = np.linspace(0, 520, 10000)
 
-    X_T = 3 * sp.cos(0.1 * t)
-    Y_T = 4 * sp.sin(0.1 * t)
-    PHI_T = 180 * sp.cos(0.2 * t) - 90
+    X_T = 3 * sp.cos(0.5 * t)
+    Y_T = 4 * sp.sin(0.5 * t)
+    PHI_T = 180 * sp.cos(0.8 * t) - 90
     F_X_T = sp.lambdify(t, X_T, "numpy")
     F_Y_T = sp.lambdify(t, Y_T, "numpy")
     F_PHI_T = sp.lambdify(t, PHI_T, "numpy")
@@ -507,7 +347,7 @@ def test2():
         k = 0.05
         s2.move([3 * np.cos(k * i), 4 * np.sin(k * i)])
 
-    _ = FuncAnimation(figure, frame, interval=1, frames=12000)
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
 
 
@@ -547,7 +387,7 @@ def test3():
     # Вычисления:
     ###
     t = sp.Symbol("t")
-    coefficient = 0.9
+    coefficient = 1.5
     X_T = 2 * (sp.sin(coefficient * t) + 1) + 5
     VX_T = sp.diff(X_T, t)
     WX_T = sp.diff(VX_T, t)
@@ -580,7 +420,7 @@ def test3():
                                         pos=(0, rectangle_height / 2))
         spring.set_data(_spring_xy[0], _spring_xy[1])
 
-    _ = FuncAnimation(figure, frame, interval=1, frames=12000)
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
 
 
@@ -652,22 +492,7 @@ def test4():
         s1.rotate_to_angle(PHI_T[i])
         s1.move_object("s2", [np.sin(0.5 * i) - 3.8, 0])
 
-    _ = FuncAnimation(figure, frame, interval=1, frames=12000)
-    plt.show()
-
-
-def test5():
-    figure = plt.figure(figsize=(8, 8))
-    g = figure.add_subplot(1, 1, 1)
-    g.set(xlim=[0, 15], ylim=[0, 15])
-
-    s1 = CoordinateSystem(g, show_center=False)
-    g.plot([3, 2], [1, 2])
-
-    def frame(i):
-        pass
-
-    _ = FuncAnimation(figure, frame, interval=1, frames=12000, blit=True)
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
 
 
