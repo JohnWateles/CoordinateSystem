@@ -1,4 +1,4 @@
-from coordinate_system import test3 as test
+from coordinate_system import test2 as test
 
 
 def main():

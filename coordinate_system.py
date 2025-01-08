@@ -269,8 +269,9 @@ def test2():
     ax.set(xlim=[-15, 15], ylim=[-15, 15])
 
     center1 = [0, 0]
-    s1 = CoordinateSystem(ax, center1)
-    s2 = CoordinateSystem(ax, center1)
+    s1 = CoordinateSystem(ax)
+    s2 = CoordinateSystem(ax)
+    s3 = CoordinateSystem(ax)
 
     t = sp.Symbol('t')
     _time = np.linspace(0, 520, 10000)
@@ -305,20 +306,37 @@ def test2():
     s1.add("line_OX", line2)
 
     distance2 = 1
-    point12 = ax.plot([0], [distance2], 'o')[0]
-    point22 = ax.plot([-distance2], [0], 'o')[0]
-    point32 = ax.plot([0], [-distance2], 'o')[0]
-    point42 = ax.plot([distance2], [0], 'o')[0]
+    point1 = ax.plot([0], [distance2], 'o')[0]
+    point2 = ax.plot([-distance2], [0], 'o')[0]
+    point3 = ax.plot([0], [-distance2], 'o')[0]
+    point4 = ax.plot([distance2], [0], 'o')[0]
 
-    line12 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
-    line22 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+    line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
+    line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
 
-    s2.add("point1", point12)
-    s2.add("point2", point22)
-    s2.add("point3", point32)
-    s2.add("point4", point42)
-    s2.add("line_OY", line12)
-    s2.add("line_OX", line22)
+    s2.add("point1", point1)
+    s2.add("point2", point2)
+    s2.add("point3", point3)
+    s2.add("point4", point4)
+    s2.add("line_OY", line1)
+    s2.add("line_OX", line2)
+
+    distance3 = 2.3
+    point1 = ax.plot([0], [distance3], 'o')[0]
+    point2 = ax.plot([-distance3], [0], 'o')[0]
+    point3 = ax.plot([0], [-distance3], 'o')[0]
+    point4 = ax.plot([distance3], [0], 'o')[0]
+
+    line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
+    line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+
+    s3.add("point1", point1)
+    s3.add("point2", point2)
+    s3.add("point3", point3)
+    s3.add("point4", point4)
+    s3.add("line_OY", line1)
+    s3.add("line_OX", line2)
+    s3.rotate_to_angle(45)
 
     def frame(i):
         coefficient = 13
@@ -341,11 +359,26 @@ def test2():
         s2.move_object("point3", [0, -value3])
         s2.move_object("point4", [value4, 0])
 
+        coefficient = 13
+        value1 = distance3 * (np.cos(0.1 * i))
+        value2 = distance3 * (np.cos(0.1 * i))
+        value3 = distance3 * (np.cos(0.1 * i))
+        value4 = distance3 * (np.cos(0.1 * i))
+        s3.move_object("point1", [0, value1])
+        s3.move_object("point2", [-value2, 0])
+        s3.move_object("point3", [0, -value3])
+        s3.move_object("point4", [value4, 0])
+
         s1.move([X_T[i], Y_T[i]])
         s1.rotate_to_angle(PHI_T[i])
 
         k = 0.05
         s2.move([3 * np.cos(k * i), 4 * np.sin(k * i)])
+
+        k = 0.1
+        new_i = (i + 100) % 10000
+        s3.move([X_T[new_i], Y_T[new_i]])
+        s3.rotate(np.pi / 120)
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
