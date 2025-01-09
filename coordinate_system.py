@@ -7,10 +7,15 @@ from time import perf_counter
 
 
 def show_execution_time(func):
+    """
+    Выводит в консоль время исполнения функции в мс
+    :param func:
+    :return:
+    """
     def wrapper(*args, **kwargs):
         _e = perf_counter()
         result = func(*args, **kwargs)
-        print(f"{func.__name__}: {round((perf_counter() - _e) * 1000, 2)}")
+        print(f"{func.__name__}: {(perf_counter() - _e) * 1000}")
         return result
     return wrapper
 
@@ -147,6 +152,7 @@ class CoordinateSystem:
         self.angle += angle
         self.angle = self.angle % (2 * np.pi)
 
+    # @show_execution_time
     def rotate_to_angle(self, angle, center=None):
         """
         Передаётся значение angle в градусах.
@@ -195,9 +201,9 @@ class CoordinateSystem:
                 new_x = obj.x + new_position[0] - self.center[0]
                 new_y = obj.y + new_position[1] - self.center[1]
                 obj.move([new_x, new_y])
-
         self.center = new_position
 
+    # @show_execution_time
     def move_object(self, name: str = None, new_position: list | tuple = (0, 0)):
         """
         Перемещает объект внутри системы координат, не перемещая её.
