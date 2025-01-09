@@ -1,53 +1,32 @@
+import time
+
 import numpy as np
 # import sympy as sp
 import matplotlib.pyplot as plt
 # from matplotlib.animation import FuncAnimation
 import matplotlib.lines as mat_lines
 from time import perf_counter
+import ctypes
 
 
 def show_execution_time(func):
     """
-    Выводит в консоль время исполнения функции в мс
+    Выводит в консоль время выполнения функции в мс
     :param func:
     :return:
     """
     def wrapper(*args, **kwargs):
         _e = perf_counter()
         result = func(*args, **kwargs)
-        print(f"{func.__name__}: {(perf_counter() - _e) * 1000}")
+        print(f"{func.__name__}: {(perf_counter() - _e) * 1_000_000} mcs;")     # ARGS: {args, kwargs}")
         return result
     return wrapper
 
 
-class Spring:
-    """
-    Попытка нормально анимировать пружины
-    """
-    def __init__(self, spring, name, length, pos=(0, 0)):
-        self.spring = spring
-        self.name = name
-        self.length = length
-        self.__pos = pos
-
-    @property
-    def pos(self):
-        return self.__pos
-
-    @pos.setter
-    def pos(self, pos):
-        """
-        ...
-        :param pos:
-        :return:
-        """
-        """
-        new_data = list(list(), list())
-        for x, y in zip(self.spring.get_data[0], self.spring.get_data[1]):
-            new_data[0].append(x + pos[0])
-            new_data[1].append(y + pos[1])
-        """
-        self.__pos = pos
+_coord_sys_funcs = ctypes.WinDLL("./coord_sys_funcs.dll")
+_coord_sys_funcs.rotation2D.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double,
+                                        ctypes.c_double, ctypes.c_double,
+                                        ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double)]
 
 
 class CoordinateSystem:
@@ -120,23 +99,14 @@ class CoordinateSystem:
             center = self.center
         for index, name_obj in enumerate(self.object_names):
             obj = self.object_names[name_obj][0]
-            if isinstance(obj, Spring):
-                spring = obj.spring
-                x = list()
-                y = list()
-                for x_i, y_i in zip(spring.get_data()[0], spring.get_data()[1]):
-                    new_x, new_y = self.__rot2d(x_i, y_i, angle, center)
-                    x.append(new_x)
-                    y.append(new_y)
-                spring.set_data(x, y)
-            elif isinstance(obj, mat_lines.Line2D):
+            if isinstance(obj, mat_lines.Line2D):
                 x = list()
                 y = list()
                 for x_i, y_i in zip(obj.get_data()[0], obj.get_data()[1]):
                     new_x, new_y = self.__rot2d(x_i, y_i, angle, center)
                     x.append(new_x)
                     y.append(new_y)
-                    if index == 0:
+                    if name_obj == f"__CENTER__OF_{repr(self)}":
                         self.center = new_x, new_y
                 obj.set_data(x, y)
             elif isinstance(obj, plt.Rectangle):
@@ -152,7 +122,6 @@ class CoordinateSystem:
         self.angle += angle
         self.angle = self.angle % (2 * np.pi)
 
-    # @show_execution_time
     def rotate_to_angle(self, angle, center=None):
         """
         Передаётся значение angle в градусах.
@@ -161,7 +130,7 @@ class CoordinateSystem:
         :param center:
         :return:
         """
-        angle -= 90     # Вычитаем 90 градусов из-за изменённой оси отсчёта градусов для класса CooridateSystem
+        angle -= 90     # Вычитаем 90 градусов из-за изменённой оси отсчёта градусов для класса CoordinateSystem
         angle *= (np.pi / 180)
         angle = angle % (2 * np.pi)
 
@@ -189,14 +158,6 @@ class CoordinateSystem:
             elif isinstance(obj, plt.Circle):
                 x1, y1 = obj.center
                 obj.center = x1 + new_position[0] - self.center[0], y1 + new_position[1] - self.center[1]
-            elif isinstance(obj, Spring):
-                spring = obj.spring
-                x = list()
-                y = list()
-                for x_i, y_i in zip(spring.get_data()[0], spring.get_data()[1]):
-                    x.append(x_i + new_position[0] - self.center[0])
-                    y.append(y_i + new_position[1] - self.center[1])
-                spring.set_data(x, y)
             elif isinstance(obj, CoordinateSystem):
                 new_x = obj.x + new_position[0] - self.center[0]
                 new_y = obj.y + new_position[1] - self.center[1]
@@ -212,11 +173,13 @@ class CoordinateSystem:
         :param name:
         :return:
         """
+        if name is None:
+            return
+
+        # Переходим в координаты системы self
         new_x = new_position[0] * np.cos(self.angle) - new_position[1] * np.sin(self.angle)
         new_y = new_position[0] * np.sin(self.angle) + new_position[1] * np.cos(self.angle)
         new_position = [new_x, new_y]
-        if name is None:
-            return
         obj = self.object_names[name][0]
         if isinstance(obj, mat_lines.Line2D):
             if name == f"__CENTER__OF_{repr(self)}":
@@ -231,14 +194,6 @@ class CoordinateSystem:
             obj.xy = self.center[0] + new_position[0], self.center[1] + new_position[1]
         elif isinstance(obj, plt.Circle):
             obj.center = self.center[0] + new_position[0], self.center[1] + new_position[1]
-        elif isinstance(obj, Spring):
-            spring = obj.spring
-            x = list()
-            y = list()
-            for x_i, y_i in zip(spring.get_data()[0], spring.get_data()[1]):
-                x.append(self.center[0] + new_position[0])
-                y.append(self.center[1] + new_position[1])
-            spring.set_data(x, y)
         elif isinstance(obj, CoordinateSystem):
             new_x = self.center[0] + new_position[0]
             new_y = self.center[1] + new_position[1]
@@ -246,11 +201,27 @@ class CoordinateSystem:
 
     # @show_execution_time
     def __rot2d(self, _x_, _y_, _phi_, center=None):
+        """
+        Функция поворота координат на угол _phi_ относительно центра center
+        :param _x_:
+        :param _y_:
+        :param _phi_: угол поворота в радианах
+        :param center:
+        :return:
+        """
         if center is None:
             center = self.center
+        """
         _phi_ = _phi_ % (2 * np.pi)
         _new_x_ = np.cos(_phi_) * (_x_ - center[0]) - np.sin(_phi_) * (_y_ - center[1]) + center[0]
         _new_y_ = np.sin(_phi_) * (_x_ - center[0]) + np.cos(_phi_) * (_y_ - center[1]) + center[1]
+        """
+        _new_x_ = ctypes.c_double()
+        _new_y_ = ctypes.c_double()
+        _coord_sys_funcs.rotation2D(_x_, _y_, _phi_, center[0], center[1], ctypes.byref(_new_x_), ctypes.byref(_new_y_))
+        _new_x_ = _new_x_.value
+        _new_y_ = _new_y_.value
+
         return _new_x_, _new_y_
 
 
