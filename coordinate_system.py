@@ -11,7 +11,7 @@ import ctypes
 
 def show_execution_time(func):
     """
-    Выводит в консоль время выполнения функции в мс
+    Выводит в консоль время выполнения функции в мкс
     :param func:
     :return:
     """
