@@ -1,8 +1,9 @@
-from coordinate_system import test2 as test
+from tests_coordinate_system import test2, test3, test4
 
 
 def main():
-    test()
+    test2()
+    test3()
 
 
 if __name__ == "__main__":
