@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления">
-      <change afterPath="$PROJECT_DIR$/coord_sys_funcs.dll" afterDir="false" />
+    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Использование ctypes">
+      <change afterPath="$PROJECT_DIR$/abs_object.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/objects.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/coordinate_system.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests_coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests_coordinate_system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,8 +41,11 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Python.abs_object.executor": "Run",
     "Python.coordinate_system.executor": "Run",
     "Python.main.executor": "Run",
+    "Python.objects.executor": "Run",
+    "Python.tests_coordinate_system.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
@@ -273,7 +278,31 @@
       <option name="project" value="LOCAL" />
       <updated>1736417378705</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Использование ctypes">
+      <option name="closed" value="true" />
+      <created>1736440076317</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1736440076317</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Использование ctypes">
+      <option name="closed" value="true" />
+      <created>1736440141221</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1736440141221</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Использование ctypes">
+      <option name="closed" value="true" />
+      <created>1736440186478</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1736440186478</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -289,6 +318,7 @@
     <MESSAGE value="changes..." />
     <MESSAGE value="Исправления в методах&#10;test4()" />
     <MESSAGE value="Исправления" />
-    <option name="LAST_COMMIT_MESSAGE" value="Исправления" />
+    <MESSAGE value="Использование ctypes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Использование ctypes" />
   </component>
 </project>

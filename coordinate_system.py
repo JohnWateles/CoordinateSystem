@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mat_lines
 from time import perf_counter
 import ctypes
+from abs_object import AbsObject
 
 
 def show_execution_time(func):
@@ -134,6 +135,19 @@ class CoordinateSystem:
 
         self.rotate(angle - self.angle, center)
 
+    def rotate_to_local_angle(self, name: str, angle):
+        """
+        Изменяет угол системы координат относительно другой системы
+        :param name:
+        :param angle:
+        :return:
+        """
+        obj = self.object_names[name][0]
+        if not isinstance(obj, CoordinateSystem):
+            raise ValueError("Not CoordinateSystem!")
+
+        obj.rotate_to_angle((180 / np.pi) * self.angle + angle)
+
     # @show_execution_time
     def move(self, new_position: list | tuple):
         """
@@ -223,7 +237,7 @@ class CoordinateSystem:
         return _new_x_, _new_y_
 
 
-def create_spring_line(length, coils, diameter, pos=(0, 0)):
+def get_spring_line(length, coils, diameter, pos=(0, 0)):
     """
     Создаёт пружину по координатам pos
     :param length:

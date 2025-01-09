@@ -2,21 +2,58 @@ import numpy as np
 import sympy as sp
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from coordinate_system import CoordinateSystem, create_spring_line
+from coordinate_system import CoordinateSystem, get_spring_line
 from time import perf_counter
 
 
 def test1():
     figure = plt.figure(figsize=(8, 8))
-    g = figure.add_subplot(1, 1, 1)
-    g.set(xlim=[0, 15], ylim=[0, 15])
+    ax = figure.add_subplot(1, 1, 1)
+    ax.set(xlim=[-10, 10], ylim=[-10, 10])
 
-    s1 = CoordinateSystem(g, show_center=False)
-    g.plot([3, 2], [1, 2])
-    # Доделать
+    abs_s = CoordinateSystem(ax, show_center=False)
+
+    s1 = CoordinateSystem(ax, show_center=True)
+
+    line_width = 0.4
+    line_length = 2
+    line1 = ax.plot([0, line_length], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+    line2 = ax.plot([0, 0], [0, line_length], color=(0, 0, 1), lw=line_width)[0]
+    s1.add("lineOX", line1)
+    s1.add("lineOY", line2)
+
+    t = np.linspace(np.pi, 2 * np.pi, 127)
+    track_radius = 5
+    x_t = track_radius * np.cos(t)
+    y_t = track_radius * np.sin(t)
+    line, = ax.plot(x_t, y_t, "-", color=(0, 0, 0), lw=2)
+
+    circle_radius = 0.8
+    position = [0, -track_radius + circle_radius + 0.05]
+    circle = plt.Circle(position, circle_radius, color=(0.3, 0.3, 0.8))
+    s1.add("circle", circle)
+
+    s2 = CoordinateSystem(ax, show_center=True)
+    line1 = ax.plot([0, line_length], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+    line2 = ax.plot([0, 0], [0, line_length], color=(0, 0, 1), lw=line_width)[0]
+    s2.add("lineOX", line1)
+    s2.add("lineOY", line2)
+    s2.move(position)
+
+    s1.add("s2", s2)
+
+    line_length = 3
+    line, = ax.plot([position[0], position[0]], [position[1], position[1] - line_length], color=(0.2, 0.2, 0.1))
+    s2.add("line", line)
+
+    small_circle_radius = 0.3
+    small_circle = plt.Circle([position[0], position[1] - line_length], radius=small_circle_radius)
+    s2.add("small_circle", small_circle)
 
     def frame(i):
-        pass
+        coefficient = 0.05
+        s1.rotate_to_angle(80 * np.sin(coefficient * i) + 90)
+        s1.rotate_to_local_angle("s2", 40 * np.sin(coefficient * i) + 90)
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
@@ -194,7 +231,7 @@ def test3():
     s2.add("cylinder1", cylinder)
 
     spring_length = length - rectangle_width
-    spring_xy = create_spring_line(spring_length, 10, 0.4, pos=(0, rectangle_height / 2))
+    spring_xy = get_spring_line(spring_length, 10, 0.4, pos=(0, rectangle_height / 2))
     spring = ax.plot(spring_xy[0], spring_xy[1])[0]
     ###
 
@@ -230,8 +267,8 @@ def test3():
         s1.move([X_T[i], 0])
         s2.rotate_to_angle(PHI_T[i])
 
-        _spring_xy = create_spring_line(X_T[i] - rectangle_width // 2, 10, 0.4,
-                                        pos=(0, rectangle_height / 2))
+        _spring_xy = get_spring_line(X_T[i] - rectangle_width // 2, 10, 0.4,
+                                     pos=(0, rectangle_height / 2))
         spring.set_data(_spring_xy[0], _spring_xy[1])
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)

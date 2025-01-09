@@ -1,7 +1,8 @@
-from tests_coordinate_system import test2, test3, test4
+from tests_coordinate_system import test1, test2, test3, test4
 
 
 def main():
+    test1()
     test2()
     test3()
 
