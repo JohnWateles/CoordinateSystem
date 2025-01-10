@@ -5,14 +5,15 @@ def main():
     current_test = 0
     code = ""
     if current_test:
-        code = f"test{current_test}()"
+        exec(f"test{current_test}()")
     else:
-        code = """
-for test in [test1, test2, test3, test4, test5, test6]:
-    test()
-"""
-    exec(code)
-    pass
+        i = 1
+        while True:
+            try:
+                exec(f"test{i}()")
+                i += 1
+            except Exception as e:
+                break
 
 
 if __name__ == "__main__":

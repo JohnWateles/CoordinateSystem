@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Добавлен новый тест, исправления">
+    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/coordinate_system.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests_coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests_coordinate_system.py" afterDir="false" />
     </list>
@@ -321,7 +320,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736510159857</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Исправления">
+      <option name="closed" value="true" />
+      <created>1736517904047</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1736517904047</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -336,10 +343,10 @@
     <MESSAGE value="Добавлены комментарии" />
     <MESSAGE value="changes..." />
     <MESSAGE value="Исправления в методах&#10;test4()" />
-    <MESSAGE value="Исправления" />
     <MESSAGE value="Использование ctypes" />
     <MESSAGE value="Новый метод локального поворота" />
     <MESSAGE value="Добавлен новый тест, исправления" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавлен новый тест, исправления" />
+    <MESSAGE value="Исправления" />
+    <option name="LAST_COMMIT_MESSAGE" value="Исправления" />
   </component>
 </project>

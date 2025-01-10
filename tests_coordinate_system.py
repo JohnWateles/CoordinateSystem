@@ -434,7 +434,7 @@ def test6():
         acs.rotate_to_local_angle("s1", alpha)
         acs.move_object("s1", [newX, newY])
 
-        acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
+        # acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
         # acs.rotate(np.pi / 180)
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
