@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mat_lines
 from time import perf_counter
 import ctypes
-from abs_object import AbsObject
 
 
 def show_execution_time(func):
@@ -32,7 +31,7 @@ class CoordinateSystem:
     def __init__(self, ax=None, center=(0, 0), show_center=True, color=None):
         self.ax = ax
         self.center = center
-        self.angle = 0
+        self.angle = 0  # Угол в радианах
         self.object_names = dict()
         self.__last = ""
         if ax is None:
@@ -60,6 +59,10 @@ class CoordinateSystem:
         :return:
         """
         return self.center[1]
+
+    @property
+    def xy(self):
+        return [self.x, self.y]
 
     @property
     def last(self):
@@ -139,7 +142,7 @@ class CoordinateSystem:
         """
         Изменяет угол системы координат относительно другой системы
         :param name:
-        :param angle:
+        :param angle: Значение угла в градусах
         :return:
         """
         obj = self.object_names[name][0]
@@ -237,7 +240,7 @@ class CoordinateSystem:
         return _new_x_, _new_y_
 
 
-def get_spring_line(length, coils, diameter, pos=(0, 0)):
+def __get_spring_line(length, coils, diameter, pos=(0, 0)):
     """
     Создаёт пружину по координатам pos
     :param length:
@@ -248,6 +251,30 @@ def get_spring_line(length, coils, diameter, pos=(0, 0)):
     """
     x = np.linspace(0 + pos[0], length + pos[0], coils * 2)
     y = [(diameter * 0.5 * (-1) ** i) + pos[1] for i in range(len(x))]
+    return np.array([x, y])
+
+
+def get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=None):
+    """
+    Создаёт пружину по координатам pos, наклонённую на угол angle вокруг центра center
+    :param length:
+    :param coils:
+    :param diameter:
+    :param pos:
+    :param angle: Угол в радианах
+    :param center:
+    :return:
+    """
+    x = np.linspace(0 + pos[0], length + pos[0], coils * 2)
+    y = [-np.sign(i) * (diameter * 0.5 * (-1) ** i) + pos[1] if (i != (len(x) - 1)) else pos[1] for i in range(len(x))]
+    if (angle is not None) and (center is not None):
+        rotated_x = list()
+        rotated_y = list()
+        for _x, _y in zip(x, y):
+            new_x, new_y = CoordinateSystem._CoordinateSystem__rot2d(None, _x, _y, angle, center)
+            rotated_x.append(new_x)
+            rotated_y.append(new_y)
+        return np.array([rotated_x, rotated_y])
     return np.array([x, y])
 
 

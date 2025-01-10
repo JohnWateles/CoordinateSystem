@@ -4,23 +4,36 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from coordinate_system import CoordinateSystem, get_spring_line
 from time import perf_counter
+import math
+
+
+def abs_test():
+    figure = plt.figure(figsize=[8, 8])
+    ax = figure.add_subplot()
+    ax.set(xlim=[-10, 10], ylim=[-10, 10])
+
+    def frame(i):
+        pass
+
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
+    plt.show()
 
 
 def test1():
+    # 25
     figure = plt.figure(figsize=(8, 8))
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
 
-    abs_s = CoordinateSystem(ax, show_center=False)
-
-    s1 = CoordinateSystem(ax, show_center=True)
-
-    line_width = 0.4
-    line_length = 2
-    line1 = ax.plot([0, line_length], [0, 0], color=(1, 0, 0), lw=line_width)[0]
-    line2 = ax.plot([0, 0], [0, line_length], color=(0, 0, 1), lw=line_width)[0]
-    s1.add("lineOX", line1)
-    s1.add("lineOY", line2)
+    show_center = False
+    s1 = CoordinateSystem(ax, show_center=show_center)
+    if show_center:
+        line_width = 0.4
+        line_length = 2
+        line1 = ax.plot([0, line_length], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+        line2 = ax.plot([0, 0], [0, line_length], color=(0, 0, 1), lw=line_width)[0]
+        s1.add("lineOX", line1)
+        s1.add("lineOY", line2)
 
     t = np.linspace(np.pi, 2 * np.pi, 127)
     track_radius = 5
@@ -33,11 +46,13 @@ def test1():
     circle = plt.Circle(position, circle_radius, color=(0.3, 0.3, 0.8))
     s1.add("circle", circle)
 
-    s2 = CoordinateSystem(ax, show_center=True)
-    line1 = ax.plot([0, line_length], [0, 0], color=(1, 0, 0), lw=line_width)[0]
-    line2 = ax.plot([0, 0], [0, line_length], color=(0, 0, 1), lw=line_width)[0]
-    s2.add("lineOX", line1)
-    s2.add("lineOY", line2)
+    s2 = CoordinateSystem(ax, show_center=show_center)
+    if show_center:
+        line1 = ax.plot([0, line_length], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+        line2 = ax.plot([0, 0], [0, line_length], color=(0, 0, 1), lw=line_width)[0]
+        s2.add("lineOX", line1)
+        s2.add("lineOY", line2)
+
     s2.move(position)
 
     s1.add("s2", s2)
@@ -203,6 +218,7 @@ def test2():
 
 
 def test3():
+    # 30
     figure = plt.figure(figsize=(8, 8))
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[0, 15], ylim=[0, 15])
@@ -276,6 +292,87 @@ def test3():
 
 
 def test4():
+    # 37
+    figure = plt.figure(figsize=[8, 8])
+    ax = figure.add_subplot()
+    ax.set(xlim=[-10, 10], ylim=[-10, 10])
+
+    show_center = False
+    acs = CoordinateSystem(ax, show_center=show_center, color=(0, 0, 0))
+
+    line_length = 5
+    distance_to_point1 = 4
+    distance_to_point2 = 3.4
+
+    s1 = CoordinateSystem(ax, show_center=show_center)
+    line, = ax.plot([0, 0], [0, line_length], lw=3, color=(0.2, 0.2, 0.7))
+    point, = ax.plot([0], [distance_to_point1], "*", color=(0, 0, 0))
+    s1.add("line", line)
+    s1.add("point", point)
+
+    s2 = CoordinateSystem(ax, show_center=show_center)
+    line, = ax.plot([0, 0], [0, line_length], lw=3, color=(0.2, 0.2, 0.7))
+    point, = ax.plot([0], [distance_to_point2], "*", color=(0, 0, 0))
+    s2.add("line", line)
+    s2.add("point", point)
+
+    acs.add("s1", s1)
+    acs.add("s2", s2)
+
+    phi2 = 120
+    phi1 = 30
+
+    acs.rotate_to_local_angle("s1", phi2)
+    acs.rotate_to_local_angle("s2", phi1)
+
+    s_spring = CoordinateSystem(ax, show_center=show_center, color=(0.5, 0.5, 0.5))
+
+    point1 = s1.get_object("point").get_data()  # ([...], [...])
+    point2 = s2.get_object("point").get_data()  # ([...], [...])
+    vector = [point1[0][0] - point2[0][0], point1[1][0] - point2[1][0]]
+    distance = np.sqrt((vector[0]) ** 2 + (vector[1]) ** 2)
+    vector = [vector[0] / distance, vector[1] / distance]
+    e_vector = [1, 0]
+    alpha = np.arccos(vector[0] * e_vector[0] + vector[1] * e_vector[1]) * (180 / np.pi)
+    spring_xy = get_spring_line(distance, 15, 0.5)
+    spring, = ax.plot(spring_xy[0], spring_xy[1], color=(0.5, 0.5, 0.5))
+
+    s_spring.add("spring", spring)
+    s_spring.move([point1[0][0], point1[1][0]])
+    s_spring.rotate_to_angle(alpha - 90)
+
+    acs.add("s_spring", s_spring)
+
+    def frame(i):
+        coefficient1 = 0.03
+        coefficient2 = 0.05
+        _phi1 = 30 * ((np.sin(coefficient1 * i) + 1) / 2)
+        _phi2 = 120 * ((np.sin(-coefficient2 * i) + 1) / 2)
+        acs.rotate_to_local_angle("s1", _phi2)
+        acs.rotate_to_local_angle("s2", _phi1)
+
+        _s_spring = acs.get_object("s_spring")
+        _point1 = acs.get_object("s1").get_object("point").get_data()
+        _point2 = acs.get_object("s2").get_object("point").get_data()
+        _vector = [_point1[0][0] - _point2[0][0], _point1[1][0] - _point2[1][0]]
+        _distance = math.sqrt((_vector[0]) ** 2 + (_vector[1]) ** 2)
+        _vector = [_vector[0] / _distance, _vector[1] / _distance]
+        _e_vector = [1, 0]
+        _alpha = np.arccos(_vector[0] * _e_vector[0] + _vector[1] * _e_vector[1]) * (180 / np.pi) - 90
+        _spring_xy = get_spring_line(_distance, 15, 0.5, pos=_s_spring.xy, angle=_s_spring.angle,
+                                     center=_s_spring.center)
+        _s_spring.get_object("spring").set_data(_spring_xy[0], _spring_xy[1])
+
+        if _phi2 - _phi1 < -2:
+            _alpha = 180 - _alpha
+        acs.rotate_to_local_angle("s_spring", _alpha)
+        acs.move_object("s_spring", [_point1[0][0] - acs.x, _point1[1][0] - acs.y])
+
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
+    plt.show()
+
+
+def test228():
     figure = plt.figure(figsize=(8, 8))
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[0, 15], ylim=[0, 15])

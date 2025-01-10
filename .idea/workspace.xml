@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Использование ctypes">
-      <change afterPath="$PROJECT_DIR$/abs_object.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/objects.py" afterDir="false" />
+    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Новый метод локального поворота">
+      <change afterPath="$PROJECT_DIR$/olds/abs_object.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/olds/objects.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/coordinate_system.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -38,21 +39,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Python.abs_object.executor": "Run",
-    "Python.coordinate_system.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.objects.executor": "Run",
-    "Python.tests_coordinate_system.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/EPIX/OneDrive/Документы/GitHub/CoordinateSystem/main.py"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Python.abs_object.executor&quot;: &quot;Run&quot;,
+    &quot;Python.coordinate_system.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.objects.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tests_coordinate_system.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/EPIX/OneDrive/Документы/GitHub/CoordinateSystem/main.py&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\EPIX\OneDrive\Документы\GitHub\CoordinateSystem\olds" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CoordinateSystem" />
@@ -302,7 +308,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736440186478</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Новый метод локального поворота">
+      <option name="closed" value="true" />
+      <created>1736449086029</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1736449086029</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -319,6 +333,7 @@
     <MESSAGE value="Исправления в методах&#10;test4()" />
     <MESSAGE value="Исправления" />
     <MESSAGE value="Использование ctypes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Использование ctypes" />
+    <MESSAGE value="Новый метод локального поворота" />
+    <option name="LAST_COMMIT_MESSAGE" value="Новый метод локального поворота" />
   </component>
 </project>
