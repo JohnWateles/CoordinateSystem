@@ -87,7 +87,7 @@ class CoordinateSystem:
         if isinstance(any_object, (plt.Rectangle, plt.Circle)):
             self.ax.add_patch(any_object)
 
-    @show_execution_time
+    # @show_execution_time
     def rotate(self, angle, center=None):
         """
         Передаётся значение angle в радианах.
