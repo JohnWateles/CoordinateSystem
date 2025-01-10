@@ -72,7 +72,7 @@ class CoordinateSystem:
         """
         return self.object_names[self.__last][0]
 
-    def get_object(self, name: str):
+    def get(self, name: str):
         return self.object_names[name][0]
 
     def add(self, name: str, any_object):

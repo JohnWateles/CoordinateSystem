@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Новый метод локального поворота">
-      <change afterPath="$PROJECT_DIR$/olds/abs_object.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/olds/objects.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Добавлен новый тест, исправления">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/coordinate_system.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -316,7 +313,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736449086029</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Добавлен новый тест, исправления">
+      <option name="closed" value="true" />
+      <created>1736510159857</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1736510159857</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -334,6 +339,7 @@
     <MESSAGE value="Исправления" />
     <MESSAGE value="Использование ctypes" />
     <MESSAGE value="Новый метод локального поворота" />
-    <option name="LAST_COMMIT_MESSAGE" value="Новый метод локального поворота" />
+    <MESSAGE value="Добавлен новый тест, исправления" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавлен новый тест, исправления" />
   </component>
 </project>
