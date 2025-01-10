@@ -87,7 +87,7 @@ class CoordinateSystem:
         if isinstance(any_object, (plt.Rectangle, plt.Circle)):
             self.ax.add_patch(any_object)
 
-    # @show_execution_time
+    @show_execution_time
     def rotate(self, angle, center=None):
         """
         Передаётся значение angle в радианах.
@@ -102,15 +102,25 @@ class CoordinateSystem:
         for index, name_obj in enumerate(self.object_names):
             obj = self.object_names[name_obj][0]
             if isinstance(obj, mat_lines.Line2D):
-                x = list()
-                y = list()
+                xy = obj.get_data()
+                x = np.array(xy[0])
+                y = np.array(xy[1])
+                x -= center[0]
+                y -= center[1]
+                new_x = x * np.cos(angle) - y * np.sin(angle)
+                new_y = x * np.sin(angle) + y * np.cos(angle)
+                new_x += center[0]
+                new_y += center[1]
+                if name_obj == f"__CENTER__OF_{repr(self)}":
+                    self.center = new_x[0], new_y[0]
+                """
                 for x_i, y_i in zip(obj.get_data()[0], obj.get_data()[1]):
                     new_x, new_y = self.__rot2d(x_i, y_i, angle, center)
                     x.append(new_x)
                     y.append(new_y)
                     if name_obj == f"__CENTER__OF_{repr(self)}":
-                        self.center = new_x, new_y
-                obj.set_data(x, y)
+                        self.center = new_x, new_y"""
+                obj.set_data(new_x, new_y)
             elif isinstance(obj, plt.Rectangle):
                 x1, y1 = obj.xy
                 obj.xy = self.__rot2d(x1, y1, angle, center)

@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления">
+    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления поворота угла (-90 гр)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/coordinate_system.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -337,7 +337,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736522391110</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Исправления поворота угла (-90 гр)">
+      <option name="closed" value="true" />
+      <created>1736531470885</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1736531470885</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -356,6 +364,7 @@
     <MESSAGE value="Новый метод локального поворота" />
     <MESSAGE value="Добавлен новый тест, исправления" />
     <MESSAGE value="Исправления" />
-    <option name="LAST_COMMIT_MESSAGE" value="Исправления" />
+    <MESSAGE value="Исправления поворота угла (-90 гр)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Исправления поворота угла (-90 гр)" />
   </component>
 </project>

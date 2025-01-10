@@ -54,6 +54,8 @@ def test1():
     __t = np.linspace(0, 2 * np.pi, 43)
     __x_t = 5 * np.cos(__t)
     __y_t = 6 * np.sin(__t)
+    # __x_t = X_T
+    # __y_t = Y_T
     line, = ax.plot(__x_t, __y_t, "--", color=(0, 0, 0), lw=0.8)  # Траектория движения
     abs_system.add("line", line)
 
