@@ -37,7 +37,7 @@ def test1():
 
     X_T = 5 * sp.cos(0.5 * t)
     Y_T = 6 * sp.sin(0.5 * t)
-    PHI_T = 180 * sp.cos(0.8 * t) - 90
+    PHI_T = 180 * sp.sin(0.8 * t) + 180
     F_X_T = sp.lambdify(t, X_T, "numpy")
     F_Y_T = sp.lambdify(t, Y_T, "numpy")
     F_PHI_T = sp.lambdify(t, PHI_T, "numpy")
@@ -153,7 +153,7 @@ def test1():
 
         new_i = (i + 100) % 10000
         abs_system.move_object("s3", [X_T[new_i], Y_T[new_i]])
-        abs_system.get("s3").rotate_to_angle(90)         # s3.rotate_to_angle(90)
+        abs_system.get("s3").rotate_to_angle(0)         # s3.rotate_to_angle(0)
 
         abs_system.move([ABS_X_T[i], ABS_Y_T[i]])
         abs_system.rotate(-np.pi / 300)
@@ -210,10 +210,10 @@ def test2():
 
     def frame(i):
         coefficient = 0.05
-        angle = 80 * np.sin(coefficient * i) + 90
+        angle = 80 * np.cos(coefficient * i)
         s1.rotate_to_angle(angle)
-        s2.rotate_to_angle(40 * np.sin(0.1 * i) + 90)
-        # s1.rotate_to_local_angle("s2", 40 * np.sin(coefficient * i) + 90)
+        s2.rotate_to_angle(40 * np.sin(0.1 * i))
+        # or s1.rotate_to_local_angle("s2", 40 * np.sin(coefficient * i))
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
@@ -260,7 +260,7 @@ def test3():
     X_T = 2 * (sp.sin(coefficient * t) + 1) + 5
     VX_T = sp.diff(X_T, t)
     WX_T = sp.diff(VX_T, t)
-    PHI_T = -80 * sp.cos(coefficient * t) + 90
+    PHI_T = -80 * sp.cos(coefficient * t)
     V_PHI_T = sp.diff(PHI_T, t)
     W_PHI_T = sp.diff(V_PHI_T, t)
 
@@ -302,6 +302,11 @@ def test4():
     show_center = False
     acs = CoordinateSystem(ax, show_center=show_center, color=(0, 0, 0))
 
+    line1, = ax.plot([0, 5], [0, 0], lw=0.8, color=(0, 0, 0))
+    line2, = ax.plot([0, 0], [0, 5], lw=0.8, color=(0, 0, 0))
+    acs.add("OX", line1)
+    acs.add("OY", line2)
+
     line_length = 5
     distance_to_point1 = 4
     distance_to_point2 = 3.4
@@ -341,11 +346,12 @@ def test4():
 
     s_spring.add("spring", spring)
     s_spring.move([point1[0][0], point1[1][0]])
-    s_spring.rotate_to_angle(alpha - 90)
+    s_spring.rotate_to_angle(alpha - 180)
 
     acs.add("s_spring", s_spring)
 
     def frame(i):
+        # return
         coefficient1 = 0.03
         coefficient2 = 0.05
         _phi1 = 30 * ((np.sin(coefficient1 * i) + 1) / 2)
@@ -369,6 +375,9 @@ def test4():
             _alpha = 180 - _alpha
         acs.rotate_to_local_angle("s_spring", _alpha)
         acs.move_object("s_spring", [_point1[0][0] - acs.x, _point1[1][0] - acs.y])
+
+        # !!! acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
+        # !!! acs.rotate(np.pi / 360)
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
@@ -508,6 +517,36 @@ def test228():
         s1.move([X_T[i], Y_T[i]])
         s1.rotate_to_angle(PHI_T[i])
         s1.move_object("s2", [np.sin(0.5 * i) - 3.8, 0])
+
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
+    plt.show()
+
+
+def test_rotate_to_local_angle():
+    figure = plt.figure(figsize=[8, 8])
+    ax = figure.add_subplot()
+    ax.set(xlim=[-10, 10], ylim=[-10, 10])
+
+    acs = CoordinateSystem(ax, color=(0, 0, 0))
+    line1, = ax.plot([0, 5], [0, 0], lw=0.8, color=(0, 0, 0))
+    line2, = ax.plot([0, 0], [0, 5], lw=0.8, color=(0, 0, 0))
+    acs.add("OX", line1)
+    acs.add("OY", line2)
+
+    s1 = CoordinateSystem(ax)
+    line1, = ax.plot([0, 3], [0, 0], lw=0.8, color=(1, 0, 0))
+    line2, = ax.plot([0, 0], [0, 3], lw=0.8, color=(0, 0, 1))
+    s1.add("OX", line1)
+    s1.add("OY", line2)
+    s1.move([1, 1])
+
+    acs.add("s1", s1)
+
+    def frame(i):
+        acs.rotate_to_local_angle("s1", 45 * np.sin(0.01 * i))
+
+        acs.rotate(np.pi / 360)
+        acs.move([3 * np.cos(0.05 * i), 3 * np.sin(0.05 * i)])
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()

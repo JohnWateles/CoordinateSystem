@@ -132,7 +132,7 @@ class CoordinateSystem:
         :param center:
         :return:
         """
-        angle -= 90     # Вычитаем 90 градусов из-за изменённой оси отсчёта градусов для класса CoordinateSystem
+        # angle -= 0 # Вычитаем 90 градусов из-за изменённой оси отсчёта градусов для класса CoordinateSystem
         angle *= (np.pi / 180)
         angle = angle % (2 * np.pi)
 
@@ -149,7 +149,7 @@ class CoordinateSystem:
         if not isinstance(obj, CoordinateSystem):
             raise ValueError("Not CoordinateSystem!")
 
-        obj.rotate_to_angle((180 / np.pi) * self.angle + angle)
+        obj.rotate_to_angle((180 / np.pi) * self.angle + angle - 90)
 
     # @show_execution_time
     def move(self, new_position: list | tuple):
@@ -254,7 +254,7 @@ def __get_spring_line(length, coils, diameter, pos=(0, 0)):
     return np.array([x, y])
 
 
-def get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=None):
+def get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=(0, 0)):
     """
     Создаёт пружину по координатам pos, наклонённую на угол angle вокруг центра center
     :param length:
