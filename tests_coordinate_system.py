@@ -403,6 +403,9 @@ def test5():
     figure = plt.figure(figsize=[8, 8])
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
+    show_center = True
+    show_axes = True
+    acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=show_center, show_axes=show_axes)
 
     def frame(i):
         pass
@@ -419,9 +422,10 @@ def test6():
     ax.plot([0, 0], [-10, 10], "--", lw=1)
 
     show_center = False
-    acs = CoordinateSystem(ax, show_center=show_center, color=(1, 0, 0))
+    show_axes = False
+    acs = CoordinateSystem(ax, color=(1, 0, 0), show_center=show_center)
 
-    s1 = CoordinateSystem(ax, show_center=show_center)
+    s1 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
     radius1 = 0.2
     circle1 = plt.Circle((0, 0), radius1, color=(0, 0, 0))
     s1.add("circle1", circle1)
@@ -433,7 +437,7 @@ def test6():
     abs_line, = ax.plot([0, 0], [line1_length, line1_length + line2_length], lw=5, color=(0, 0, 0))
     s1.add("abs_line", abs_line)
 
-    s2 = CoordinateSystem(ax, show_center=show_center)
+    s2 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
     line, = ax.plot([0, 0], [0, line1_length], lw=5, color=(0, 0, 0))
     radius2 = 0.2
     circle2 = plt.Circle((0, line1_length), radius2, color=(0, 0, 0))
@@ -471,7 +475,8 @@ def test228():
     ax.set(xlim=[0, 15], ylim=[0, 15])
 
     show_center = False
-    s1 = CoordinateSystem(ax, (4.5, 2.5), show_center=show_center)
+    show_axes = False
+    s1 = CoordinateSystem(ax, (4.5, 2.5), show_center=show_center, show_axes=show_axes)
     s1.add("rec1", plt.Rectangle((2, 1), width=5, height=3, color=(1, 0.5, 0.75)))
     s1.add("rec2", plt.Rectangle((6, 3), width=1.7, height=1.7, color=(0.9, 0.4, 0.67)))
     x = 6
@@ -503,7 +508,7 @@ def test228():
     stick = plt.Rectangle((0, 2.5), width=3, height=stick_height, color=(0, 0, 0))
     border = plt.Rectangle((0, 2.5 - (border_height / 2) + (stick_height / 2)), width=0.2, height=border_height, color=(0, 0, 0))
 
-    s2 = CoordinateSystem(ax, (0 + 0.1, 2.5 + stick_height / 2), show_center=show_center)
+    s2 = CoordinateSystem(ax, (0 + 0.1, 2.5 + stick_height / 2), show_center=show_center, show_axes=show_axes)
     s2.add("white_space", white_space)
     s2.add("stick", stick)
     s2.add("border", border)
