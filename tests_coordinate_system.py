@@ -320,15 +320,15 @@ def test4():
     distance_to_point1 = 4
     distance_to_point2 = 3.4
 
-    s1 = CoordinateSystem(ax, show_center=show_center)
-    line, = ax.plot([0, 0], [0, line_length], lw=3, color=(0.2, 0.2, 0.7))
-    point, = ax.plot([0], [distance_to_point1], "*", color=(0, 0, 0))
+    s1 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    line, = ax.plot([0, line_length], [0, 0], lw=3, color=(0.6, 0.2, 0.4))
+    point, = ax.plot([distance_to_point1], [0], "*", color=(0, 0, 0))
     s1.add("line", line)
     s1.add("point", point)
 
-    s2 = CoordinateSystem(ax, show_center=show_center)
-    line, = ax.plot([0, 0], [0, line_length], lw=3, color=(0.2, 0.2, 0.7))
-    point, = ax.plot([0], [distance_to_point2], "*", color=(0, 0, 0))
+    s2 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    line, = ax.plot([0, line_length], [0, 0], lw=3, color=(0.6, 0.2, 0.4))
+    point, = ax.plot([distance_to_point2], [0], "*", color=(0, 0, 0))
     s2.add("line", line)
     s2.add("point", point)
 
@@ -365,6 +365,8 @@ def test4():
         _phi1 = 30 * ((np.sin(coefficient1 * i)) / 2)
         _phi2 = 335 * ((np.sin(-coefficient2 * i) + 0.8) / 2)
 
+        # _phi1 = 30
+        # _phi2 = 67
         acs.rotate_to_local_angle("s1", _phi2)
         acs.rotate_to_local_angle("s2", _phi1)
 
@@ -374,8 +376,8 @@ def test4():
         _vector = [_point1[0][0] - _point2[0][0], _point1[1][0] - _point2[1][0]]
         _distance = math.sqrt((_vector[0]) ** 2 + (_vector[1]) ** 2)
         _vector = [_vector[0] / _distance, _vector[1] / _distance]
-        _e_vector = [1, 0]
-        _alpha = np.arccos(_vector[0] * _e_vector[0] + _vector[1] * _e_vector[1]) * (180 / np.pi) - 90
+        _e_vector = [1 * np.cos(acs.angle), 1 * np.sin(acs.angle)]
+        _alpha = np.arccos(_vector[0] * _e_vector[0] + _vector[1] * _e_vector[1]) * (180 / np.pi)
         _spring_xy = get_spring_line(_distance, 15, 0.5, pos=_s_spring.xy, angle=_s_spring.angle,
                                      center=_s_spring.center)
         _s_spring.get("spring").set_data(_spring_xy[0], _spring_xy[1])
@@ -385,6 +387,8 @@ def test4():
         new_y = new_xy[1]
         if _point2 is new_xy:
             _alpha = -_alpha
+        else:
+            _alpha += 180
 
         acs.rotate_to_local_angle("s_spring", _alpha)
         new_pos_x = new_x - acs.x
@@ -407,8 +411,12 @@ def test5():
     show_axes = True
     acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=show_center, show_axes=show_axes)
 
+    s1 = CoordinateSystem(ax, center=(2, 1), show_center=show_center, show_axes=show_axes)
+    acs.add("s1", s1)
+
     def frame(i):
-        pass
+        # acs.rotate(np.pi / 360)
+        acs.rotate_to_local_angle("s1", 15)
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
@@ -430,7 +438,7 @@ def test6():
     circle1 = plt.Circle((0, 0), radius1, color=(0, 0, 0))
     s1.add("circle1", circle1)
 
-    line1_length = 0.8
+    line1_length = 1
     line2_length = 3
     s1.move([0, line1_length + line2_length])
 
@@ -458,7 +466,7 @@ def test6():
 
         newX = 0
         newY = np.sqrt(line2_length ** 2 - curX ** 2) + curY
-        alpha = -(180 / np.pi) * np.arcsin((line1_length / line2_length) * np.sin((np.pi / 180) * (alpha1 - 90))) + 90
+        alpha = -(180 / np.pi) * np.arcsin((line1_length / line2_length) * np.sin((np.pi / 180) * alpha1))
         acs.rotate_to_local_angle("s1", alpha)
         acs.move_object("s1", [newX, newY])
 

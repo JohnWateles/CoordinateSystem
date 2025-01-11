@@ -162,7 +162,7 @@ class CoordinateSystem:
         if not isinstance(obj, CoordinateSystem):
             raise ValueError("Not CoordinateSystem!")
 
-        obj.rotate_to_angle((180 / np.pi) * self.angle + angle - 90)
+        obj.rotate_to_angle((180 / np.pi) * self.angle + angle)
 
     # @show_execution_time
     def move(self, new_position: list | tuple):
