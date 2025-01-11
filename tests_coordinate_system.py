@@ -2,7 +2,7 @@ import numpy as np
 import sympy as sp
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from coordinate_system import CoordinateSystem, get_spring_line
+from coordinate_system import CoordinateSystem, get_spring_line, show_execution_time
 from time import perf_counter
 import math
 
@@ -11,6 +11,9 @@ def test_abs():
     figure = plt.figure(figsize=[8, 8])
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
+    show_center = True
+    show_axes = True
+    acs = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
 
     def frame(i):
         pass
@@ -24,10 +27,12 @@ def test1():
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[-15, 15], ylim=[-15, 15])
 
-    abs_system = CoordinateSystem(ax, color=(1, 0, 0))
-    s1 = CoordinateSystem(ax)
-    s2 = CoordinateSystem(ax)
-    s3 = CoordinateSystem(ax, color=(0, 0, 0))
+    show_center = True
+    show_axes = True
+    abs_system = CoordinateSystem(ax, color=(1, 0, 0), show_center=show_center, show_axes=show_axes)
+    s1 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    s2 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    s3 = CoordinateSystem(ax, color=(0, 0, 0), show_center=show_center, show_axes=show_axes)
     abs_system.add("s1", s1)
     abs_system.add("s2", s2)
     abs_system.add("s3", s3)
@@ -70,16 +75,16 @@ def test1():
     point3 = ax.plot([0], [-distance1], 'o')[0]
     point4 = ax.plot([distance1], [0], 'o')[0]
 
-    line_width = 0.4
-    line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
-    line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+    # line_width = 0.4
+    # line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
+    # line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
 
     s1.add("point1", point1)
     s1.add("point2", point2)
     s1.add("point3", point3)
     s1.add("point4", point4)
-    s1.add("line_OY", line1)
-    s1.add("line_OX", line2)
+    # s1.add("line_OY", line1)
+    # s1.add("line_OX", line2)
 
     distance2 = 1
     point1 = ax.plot([0], [distance2], 'o')[0]
@@ -87,15 +92,15 @@ def test1():
     point3 = ax.plot([0], [-distance2], 'o')[0]
     point4 = ax.plot([distance2], [0], 'o')[0]
 
-    line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
-    line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+    # line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
+    # line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
 
     s2.add("point1", point1)
     s2.add("point2", point2)
     s2.add("point3", point3)
     s2.add("point4", point4)
-    s2.add("line_OY", line1)
-    s2.add("line_OX", line2)
+    # s2.add("line_OY", line1)
+    # s2.add("line_OX", line2)
 
     distance3 = 2.3
     point1 = ax.plot([0], [distance3], 'o')[0]
@@ -103,16 +108,17 @@ def test1():
     point3 = ax.plot([0], [-distance3], 'o')[0]
     point4 = ax.plot([distance3], [0], 'o')[0]
 
-    line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
-    line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
+    # line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
+    # line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
 
     s3.add("point1", point1)
     s3.add("point2", point2)
     s3.add("point3", point3)
     s3.add("point4", point4)
-    s3.add("line_OY", line1)
-    s3.add("line_OX", line2)
+    # s3.add("line_OY", line1)
+    # s3.add("line_OX", line2)
 
+    # @show_execution_time
     def frame(i):
         # Изменение положения точек внутри системы s1
         coefficient = 13
@@ -302,7 +308,8 @@ def test4():
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
 
     show_center = False
-    acs = CoordinateSystem(ax, show_center=show_center, color=(0, 0, 0))
+    show_axes = False
+    acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=show_center)
 
     line1, = ax.plot([0, 5], [0, 0], lw=0.8, color=(0, 0, 0))
     line2, = ax.plot([0, 0], [0, 5], lw=0.8, color=(0, 0, 0))
@@ -334,7 +341,7 @@ def test4():
     acs.rotate_to_local_angle("s1", phi2)
     acs.rotate_to_local_angle("s2", phi1)
 
-    s_spring = CoordinateSystem(ax, show_center=show_center, color=(0.5, 0.5, 0.5))
+    s_spring = CoordinateSystem(ax, show_center=show_center, color=(0.5, 0.5, 0.5), show_axes=show_axes)
 
     point1 = s1.get("point").get_data()  # ([...], [...])
     point2 = s2.get("point").get_data()  # ([...], [...])
@@ -353,11 +360,11 @@ def test4():
     acs.add("s_spring", s_spring)
 
     def frame(i):
-        # return
         coefficient1 = 0.03
         coefficient2 = 0.05
-        _phi1 = 30 * ((np.sin(coefficient1 * i) + 1) / 2)
-        _phi2 = 120 * ((np.sin(-coefficient2 * i) + 1) / 2)
+        _phi1 = 30 * ((np.sin(coefficient1 * i)) / 2)
+        _phi2 = 335 * ((np.sin(-coefficient2 * i) + 0.8) / 2)
+
         acs.rotate_to_local_angle("s1", _phi2)
         acs.rotate_to_local_angle("s2", _phi1)
 
@@ -373,10 +380,16 @@ def test4():
                                      center=_s_spring.center)
         _s_spring.get("spring").set_data(_spring_xy[0], _spring_xy[1])
 
-        if _phi2 - _phi1 < -2:
-            _alpha = 180 - _alpha
+        new_xy = max(_point1, _point2, key=lambda mas: mas[1][0])   # Ищем точку с максимальным значением по y
+        new_x = new_xy[0]
+        new_y = new_xy[1]
+        if _point2 is new_xy:
+            _alpha = -_alpha
+
         acs.rotate_to_local_angle("s_spring", _alpha)
-        acs.move_object("s_spring", [_point1[0][0] - acs.x, _point1[1][0] - acs.y])
+        new_pos_x = new_x - acs.x
+        new_pos_y = new_y - acs.y
+        acs.move_object("s_spring", [new_pos_x, new_pos_y])
 
         # !!! acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
         # !!! acs.rotate(np.pi / 360)

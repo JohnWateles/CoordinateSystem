@@ -28,7 +28,7 @@ _coord_sys_funcs.rotation2D.argtypes = [ctypes.c_double, ctypes.c_double, ctypes
 
 
 class CoordinateSystem:
-    def __init__(self, ax=None, center=(0, 0), show_center=True, color=None):
+    def __init__(self, ax=None, center=(0, 0), color=None, show_center=False, show_axes=False):
         self.ax = ax
         self.center = center
         self.angle = 0  # Угол в радианах
@@ -43,6 +43,15 @@ class CoordinateSystem:
         else:
             self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]], color=(0, 0, 0))[0])
             # Центр должен быть, иначе неправильно работают методы rotate_to_angle() и move_object()
+        if show_axes:
+            axis_length = 3
+            axis_width = 0.8
+            self.add(f"__AXIS_OX__OF_{repr(self)}", ax.plot([center[0], center[0] + axis_length],
+                                                            [center[1], center[1]],
+                     color=(1, 0, 0), lw=axis_width)[0])
+            self.add(f"__AXIS_OY__OF_{repr(self)}", ax.plot([center[0], center[0]],
+                                                            [center[1], center[1] + axis_length],
+                     color=(0, 0, 1), lw=axis_width)[0])
 
     @property
     def x(self):
@@ -73,6 +82,11 @@ class CoordinateSystem:
         return self.object_names[self.__last][0]
 
     def get(self, name: str):
+        """
+        Возвращает объект по имени name
+        :param name:
+        :return:
+        """
         return self.object_names[name][0]
 
     def add(self, name: str, any_object):
@@ -103,23 +117,12 @@ class CoordinateSystem:
             obj = self.object_names[name_obj][0]
             if isinstance(obj, mat_lines.Line2D):
                 xy = obj.get_data()
-                x = np.array(xy[0])
-                y = np.array(xy[1])
-                x -= center[0]
-                y -= center[1]
-                new_x = x * np.cos(angle) - y * np.sin(angle)
-                new_y = x * np.sin(angle) + y * np.cos(angle)
-                new_x += center[0]
-                new_y += center[1]
+                x = np.array(xy[0], dtype=np.float64)
+                y = np.array(xy[1], dtype=np.float64)
+                new_x = (x - center[0]) * np.cos(angle) - (y - center[1]) * np.sin(angle) + center[0]
+                new_y = (x - center[0]) * np.sin(angle) + (y - center[1]) * np.cos(angle) + center[1]
                 if name_obj == f"__CENTER__OF_{repr(self)}":
                     self.center = new_x[0], new_y[0]
-                """
-                for x_i, y_i in zip(obj.get_data()[0], obj.get_data()[1]):
-                    new_x, new_y = self.__rot2d(x_i, y_i, angle, center)
-                    x.append(new_x)
-                    y.append(new_y)
-                    if name_obj == f"__CENTER__OF_{repr(self)}":
-                        self.center = new_x, new_y"""
                 obj.set_data(new_x, new_y)
             elif isinstance(obj, plt.Rectangle):
                 x1, y1 = obj.xy
@@ -171,11 +174,11 @@ class CoordinateSystem:
         for name_obj in self.object_names:
             obj = self.object_names[name_obj][0]
             if isinstance(obj, mat_lines.Line2D):
-                x = list()
-                y = list()
-                for x_i, y_i in zip(obj.get_data()[0], obj.get_data()[1]):
-                    x.append(x_i + new_position[0] - self.center[0])
-                    y.append(y_i + new_position[1] - self.center[1])
+                xy = obj.get_data()
+                x = np.array(xy[0], dtype=np.float64)
+                y = np.array(xy[1], dtype=np.float64)
+                x += new_position[0] - self.x
+                y += new_position[1] - self.y
                 obj.set_data(x, y)
             elif isinstance(obj, plt.Rectangle):
                 x1, y1 = obj.xy
@@ -198,8 +201,6 @@ class CoordinateSystem:
         :param name:
         :return:
         """
-        if name is None:
-            return
 
         # Переходим в координаты системы self
         new_x = new_position[0] * np.cos(self.angle) - new_position[1] * np.sin(self.angle)
@@ -209,19 +210,20 @@ class CoordinateSystem:
         if isinstance(obj, mat_lines.Line2D):
             if name == f"__CENTER__OF_{repr(self)}":
                 return
-            x = list()
-            y = list()
-            for x_i, y_i in zip(obj.get_data()[0], obj.get_data()[1]):
-                x.append(self.center[0] + new_position[0])
-                y.append(self.center[1] + new_position[1])
+            xy = obj.get_data()
+            length = len(xy[0])
+            x = np.zeros(length, dtype=np.float64)
+            y = np.zeros(length, dtype=np.float64)
+            x += new_position[0] + self.x
+            y += new_position[1] + self.y
             obj.set_data(x, y)
         elif isinstance(obj, plt.Rectangle):
-            obj.xy = self.center[0] + new_position[0], self.center[1] + new_position[1]
+            obj.xy = self.x + new_position[0], self.y + new_position[1]
         elif isinstance(obj, plt.Circle):
-            obj.center = self.center[0] + new_position[0], self.center[1] + new_position[1]
+            obj.center = self.x + new_position[0], self.y + new_position[1]
         elif isinstance(obj, CoordinateSystem):
-            new_x = self.center[0] + new_position[0]
-            new_y = self.center[1] + new_position[1]
+            new_x = self.x + new_position[0]
+            new_y = self.y + new_position[1]
             obj.move([new_x, new_y])
 
     # @show_execution_time
