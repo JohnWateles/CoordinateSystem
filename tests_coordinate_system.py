@@ -360,9 +360,9 @@ def test4():
     acs.add("s_spring", s_spring)
 
     def frame(i):
-        coefficient1 = 0.03
+        coefficient1 = 0.02
         coefficient2 = 0.05
-        _phi1 = 30 * ((np.sin(coefficient1 * i)) / 2)
+        _phi1 = 390 * ((np.sin(coefficient1 * i)) / 2)
         _phi2 = 335 * ((np.sin(-coefficient2 * i) + 0.8) / 2)
 
         # _phi1 = 30
