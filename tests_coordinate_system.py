@@ -75,16 +75,10 @@ def test1():
     point3 = ax.plot([0], [-distance1], 'o')[0]
     point4 = ax.plot([distance1], [0], 'o')[0]
 
-    # line_width = 0.4
-    # line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
-    # line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
-
     s1.add("point1", point1)
     s1.add("point2", point2)
     s1.add("point3", point3)
     s1.add("point4", point4)
-    # s1.add("line_OY", line1)
-    # s1.add("line_OX", line2)
 
     distance2 = 1
     point1 = ax.plot([0], [distance2], 'o')[0]
@@ -92,15 +86,10 @@ def test1():
     point3 = ax.plot([0], [-distance2], 'o')[0]
     point4 = ax.plot([distance2], [0], 'o')[0]
 
-    # line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
-    # line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
-
     s2.add("point1", point1)
     s2.add("point2", point2)
     s2.add("point3", point3)
     s2.add("point4", point4)
-    # s2.add("line_OY", line1)
-    # s2.add("line_OX", line2)
 
     distance3 = 2.3
     point1 = ax.plot([0], [distance3], 'o')[0]
@@ -108,15 +97,10 @@ def test1():
     point3 = ax.plot([0], [-distance3], 'o')[0]
     point4 = ax.plot([distance3], [0], 'o')[0]
 
-    # line1 = ax.plot([0, 0], [0, 4], color=(0, 0, 1), lw=line_width)[0]
-    # line2 = ax.plot([0, 4], [0, 0], color=(1, 0, 0), lw=line_width)[0]
-
     s3.add("point1", point1)
     s3.add("point2", point2)
     s3.add("point3", point3)
     s3.add("point4", point4)
-    # s3.add("line_OY", line1)
-    # s3.add("line_OX", line2)
 
     # @show_execution_time
     def frame(i):
@@ -154,7 +138,8 @@ def test1():
 
         # ...
         abs_system.move_object("s1", [X_T[i], Y_T[i]])
-        abs_system.get("s1").rotate_to_angle(PHI_T[i])   # s1.rotate_to_angle(PHI_T[i])
+        abs_system.rotate_to_local_angle("s1", PHI_T[i])
+        # abs_system.get("s1").rotate_to_angle(PHI_T[i])   # s1.rotate_to_angle(PHI_T[i])
 
         k = 0.05
         abs_system.move_object("s2", [5 * np.cos(k * i), 6 * np.sin(k * i)])
@@ -220,8 +205,8 @@ def test2():
         coefficient = 0.05
         angle = 80 * np.cos(coefficient * i)
         s1.rotate_to_angle(angle)
-        s2.rotate_to_angle(40 * np.sin(0.1 * i))
-        # or s1.rotate_to_local_angle("s2", 40 * np.sin(coefficient * i))
+        s1.rotate_to_local_angle("s2", 30 * np.sin(coefficient * i))
+        # s2.rotate_to_angle(30 * np.sin(coefficient * i) + angle)
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
@@ -307,8 +292,8 @@ def test4():
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
 
-    show_center = False
-    show_axes = False
+    show_center = False     # or True
+    show_axes = False       # or True
     acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=show_center)
 
     line1, = ax.plot([0, 5], [0, 0], lw=0.8, color=(0, 0, 0))
@@ -379,8 +364,15 @@ def test4():
         _e_vector = [1 * np.cos(acs.angle), 1 * np.sin(acs.angle)]
         _alpha = np.arccos(_vector[0] * _e_vector[0] + _vector[1] * _e_vector[1]) * (180 / np.pi)
         _spring_xy = get_spring_line(_distance, 15, 0.5, pos=_s_spring.xy, angle=_s_spring.angle,
-                                     center=_s_spring.center)
-        _s_spring.get("spring").set_data(_spring_xy[0], _spring_xy[1])
+                                     center=acs.center)
+        _s_spring.get("spring").set_data(_spring_xy)
+
+        """
+        _point1 = CoordinateSystem._rot2d(None, _point1[0][0], _point1[1][0], acs.angle, acs.center)
+        _point2 = CoordinateSystem._rot2d(None, _point2[0][0], _point2[1][0], acs.angle, acs.center)
+        _point1 = (np.array([_point1[0]]), np.array([_point1[1]]))
+        _point2 = (np.array([_point2[0]]), np.array([_point2[1]]))
+        """
 
         new_xy = max(_point1, _point2, key=lambda mas: mas[1][0])   # Ищем точку с максимальным значением по y
         new_x = new_xy[0]
@@ -407,22 +399,157 @@ def test5():
     figure = plt.figure(figsize=[8, 8])
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
-    show_center = True
-    show_axes = True
-    acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=show_center, show_axes=show_axes)
+    show_center = False     # or True
+    show_axes = False       # or True
+    acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=True, show_axes=show_axes)
 
-    s1 = CoordinateSystem(ax, center=(2, 1), show_center=show_center, show_axes=show_axes)
+    s1 = CoordinateSystem(ax, center=(0, 0), show_center=show_center, show_axes=show_axes)
     acs.add("s1", s1)
 
+    radius1 = 4
+    t = np.linspace(0, 2 * np.pi, 127)
+    x = radius1 * np.cos(t)
+    y = radius1 * np.sin(t)
+    circle, = ax.plot(x, y, lw=3, color=(0.5, 0.5, 0.5))
+    rect_width = 1.5
+    rect_height = 0.4
+    rectangle1 = plt.Rectangle([0 - rect_width / 2, radius1], width=rect_width, height=rect_height,
+                               color=(0.5, 0.5, 0.5))
+    rectangle2 = plt.Rectangle([radius1 + rect_height, 0 - rect_width / 2],
+                               width=rect_width, height=rect_height, angle=90,
+                               color=(0.5, 0.5, 0.5))
+    rectangle3 = plt.Rectangle([0 - rect_width / 2, -radius1 - rect_height], width=rect_width, height=rect_height,
+                               color=(0.5, 0.5, 0.5))
+    rectangle4 = plt.Rectangle([-radius1, 0 - rect_width / 2],
+                               width=rect_width, height=rect_height, angle=90,
+                               color=(0.5, 0.5, 0.5))
+    s1.add("circle", circle)
+    s1.add("rectangle1", rectangle1)
+    s1.add("rectangle2", rectangle2)
+    s1.add("rectangle3", rectangle3)
+    s1.add("rectangle4", rectangle4)
+
+    s2 = CoordinateSystem(ax, center=(0, 0), color=(0, 0, 0), show_center=True, show_axes=show_axes)
+    line_length = 3
+    line, = ax.plot([0, 0], [0, -line_length], lw=2, color=(0, 0, 0))
+    radius2 = 0.7
+    small_circle = plt.Circle([0, -line_length], radius2, color=(0, 0, 0))
+    small_circle.set_zorder(2)  # Чтобы круг рисовался поверх других объектов
+    s2.add("lineAB", line)
+    s2.add("small_circle", small_circle)
+    s2.move([-2, 1])
+    s1.add("s2", s2)
+
     def frame(i):
+        # return
+        phi = 3 * i
+        psi = 30 * np.sin(0.1 * i)
+        acs.rotate_to_local_angle("s1", phi)
+        acs.get("s1").get("s2").rotate_to_angle(psi + (180 / np.pi) * acs.angle)
+
+        acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
         # acs.rotate(np.pi / 360)
-        acs.rotate_to_local_angle("s1", 15)
+        pass
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
 
 
 def test6():
+    figure = plt.figure(figsize=[8, 8])
+    ax = figure.add_subplot()
+    ax.set(xlim=[-10, 10], ylim=[-10, 10])
+    show_center = False     # or True
+    show_axes = False       # or True
+
+    acs = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    s1 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    s2 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+
+    black = (0, 0, 0)
+    line_width = 2
+
+    length1 = 5
+    length2 = 0.7
+    rect_width = 1.5
+    rect_height = 0.7
+    rect_color = (0.3, 0.3, 0.8)
+
+    spring_coils = 8
+    spring_diameter = 0.5
+
+    def init_s1():
+        wide_line, = ax.plot([-length1 / 2, length1 / 2], [0, 0], lw=line_width, color=black)
+        short_line1, = ax.plot([-length1 / 2, -length1 / 2], [0, length2], lw=line_width, color=black)
+        short_line2, = ax.plot([length1 / 2, length1 / 2], [0, length2], lw=line_width, color=black)
+
+        rectangle = plt.Rectangle([0 - rect_width / 2, 0], width=rect_width, height=rect_height, color=rect_color)
+
+        spring_color = (0.6, 0.6, 0.6)
+
+        s1.add("wide_line", wide_line)
+        s1.add("short_line1", short_line1)
+        s1.add("short_line2", short_line2)
+        s1.add("rectangle", rectangle)
+        spring_xy = get_spring_line(abs(length1 / 2 - rect_width / 2), spring_coils, spring_diameter,
+                                    pos=[-length1 / 2, length2 / 2])
+        s1.add("spring1", ax.plot(spring_xy[0], spring_xy[1], color=spring_color, zorder=-1)[0])
+        spring_xy = get_spring_line(abs(length1 / 2 - rectangle.xy[0] - rect_width), spring_coils, spring_diameter,
+                                    pos=[rect_width / 2, length2 / 2])
+        s1.add("spring2", ax.plot(spring_xy[0], spring_xy[1], color=spring_color, zorder=-1)[0])
+
+        length = 6
+        s1.move([0, length])
+        line, = ax.plot([0, 0], [0, length], lw=line_width, color=black)
+        s1.add("line", line)
+
+    def init_s2():
+        s2.add("s1", s1)
+
+    def init_acs():
+        acs.add("s2", s2)
+
+    init_s1()
+    init_s2()
+    init_acs()
+
+    def frame(i):
+        # return
+        x_t = (length1 / 2 - rect_width) * np.sin(0.09 * i) - rect_width / 2
+        phi = 90 * (np.sin(0.015 * i))
+
+        s1.move_object("rectangle", [x_t, 0])   # Сначала двигаем прямоугольник, иначе появляется задержка
+
+        xy = s1.get("short_line1").get_data()
+        pos1 = ((xy[0][0] + xy[0][1]) / 2, (xy[1][0] + xy[1][1]) / 2)
+        xy = s1.get("short_line2").get_data()
+        pos3 = ((xy[0][0] + xy[0][1]) / 2, (xy[1][0] + xy[1][1]) / 2)
+        corners = s1.get("rectangle").get_corners()
+        pos2 = ((corners[1][0] + corners[2][0]) / 2, (corners[1][1] + corners[2][1]) / 2)
+        pos4 = ((corners[0][0] + corners[3][0]) / 2, (corners[0][1] + corners[3][1]) / 2)
+        first_length = np.sqrt((pos1[0] - pos4[0]) ** 2 + (pos1[1] - pos4[1]) ** 2)
+        second_length = np.sqrt((pos2[0] - pos3[0]) ** 2 + (pos2[1] - pos3[1]) ** 2)
+
+        epsilon = 0.03  # Чтоб прям красиво было
+        spring_xy = get_spring_line(first_length - epsilon, spring_coils, spring_diameter,
+                                    pos=pos1, angle=acs.get("s2").angle)
+        s1.get("spring1").set_data(spring_xy)
+
+        spring_xy = get_spring_line(second_length, spring_coils, spring_diameter,
+                                    pos=(pos2[0] + epsilon, pos2[1]), angle=acs.get("s2").angle)
+        s1.get("spring2").set_data(spring_xy)
+
+        acs.rotate_to_local_angle("s2", phi)
+
+        # acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
+        # acs.rotate(np.pi / 360)
+        pass
+
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
+    plt.show()
+
+
+def test7():
     figure = plt.figure(figsize=[8, 8])
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])

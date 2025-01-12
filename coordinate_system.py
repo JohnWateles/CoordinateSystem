@@ -31,7 +31,7 @@ class CoordinateSystem:
     def __init__(self, ax=None, center=(0, 0), color=None, show_center=False, show_axes=False):
         self.ax = ax
         self.center = center
-        self.angle = 0  # Угол в радианах
+        self.__angle = 0  # Угол в радианах
         self.object_names = dict()
         self.__last = ""
         if ax is None:
@@ -81,6 +81,19 @@ class CoordinateSystem:
         """
         return self.object_names[self.__last][0]
 
+    @property
+    def angle(self):
+        """
+        Возвращает угол в радианах
+        :return:
+        """
+        return self.__angle
+
+    @angle.setter
+    def angle(self, value):
+        value = value % (2 * np.pi)
+        self.__angle = value
+
     def get(self, name: str):
         """
         Возвращает объект по имени name
@@ -126,12 +139,12 @@ class CoordinateSystem:
                 obj.set_data(new_x, new_y)
             elif isinstance(obj, plt.Rectangle):
                 x1, y1 = obj.xy
-                obj.xy = self.__rot2d(x1, y1, angle, center)
+                obj.xy = self._rot2d(x1, y1, angle, center)
                 curr_angle = obj.angle
                 obj.angle = curr_angle + angle * 180 / np.pi
             elif isinstance(obj, plt.Circle):
                 x1, y1 = obj.center
-                obj.center = self.__rot2d(x1, y1, angle, center)
+                obj.center = self._rot2d(x1, y1, angle, center)
             elif isinstance(obj, CoordinateSystem):
                 obj.rotate(angle, center)
         self.angle += angle
@@ -145,7 +158,6 @@ class CoordinateSystem:
         :param center:
         :return:
         """
-        # angle -= 0 # Вычитаем 90 градусов из-за изменённой оси отсчёта градусов для класса CoordinateSystem
         angle *= (np.pi / 180)
         angle = angle % (2 * np.pi)
 
@@ -154,7 +166,7 @@ class CoordinateSystem:
     def rotate_to_local_angle(self, name: str, angle):
         """
         Изменяет угол системы координат относительно другой системы
-        :param name:
+        :param name: Имя системы координат
         :param angle: Значение угла в градусах
         :return:
         """
@@ -227,7 +239,7 @@ class CoordinateSystem:
             obj.move([new_x, new_y])
 
     # @show_execution_time
-    def __rot2d(self, _x_, _y_, _phi_, center=None):
+    def _rot2d(self, _x_, _y_, _phi_, center=None):
         """
         Функция поворота координат на угол _phi_ относительно центра center
         :param _x_:
@@ -266,7 +278,7 @@ def __get_spring_line(length, coils, diameter, pos=(0, 0)):
     return np.array([x, y])
 
 
-def get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=(0, 0)):
+def ___get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=(0, 0)):
     """
     Создаёт пружину по координатам pos, наклонённую на угол angle вокруг центра center
     :param length:
@@ -279,15 +291,45 @@ def get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=(0, 
     """
     x = np.linspace(0 + pos[0], length + pos[0], coils * 2)
     y = [-np.sign(i) * (diameter * 0.5 * (-1) ** i) + pos[1] if (i != (len(x) - 1)) else pos[1] for i in range(len(x))]
-    if (angle is not None) and (center is not None):
+    if angle is not None:
         rotated_x = list()
         rotated_y = list()
         for _x, _y in zip(x, y):
-            new_x, new_y = CoordinateSystem._CoordinateSystem__rot2d(None, _x, _y, angle, center)
+            new_x, new_y = CoordinateSystem._rot2d(None, _x, _y, angle, center)
             rotated_x.append(new_x)
             rotated_y.append(new_y)
         return np.array([rotated_x, rotated_y])
     return np.array([x, y])
+
+
+def get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=(0, 0)):
+    """
+    Создаёт пружину по координатам pos, наклонённую на угол angle вокруг центра center
+    :param length:
+    :param coils:
+    :param diameter:
+    :param pos:
+    :param angle: Угол в радианах
+    :param center:
+    :return:
+    """
+    x = np.linspace(0, length, coils * 2, dtype=np.float64)
+    y = np.array([-np.sign(i) * (diameter * 0.5 * (-1) ** i) if (i != (len(x) - 1)) else 0 for i in range(len(x))],
+                 dtype=np.float64)
+    if angle is not None:
+        new_x = (x - center[0]) * np.cos(angle) - (y - center[1]) * np.sin(angle) + center[0] + pos[0]
+        new_y = (x - center[0]) * np.sin(angle) + (y - center[1]) * np.cos(angle) + center[1] + pos[1]
+        return np.array([new_x, new_y])
+    x += pos[0]
+    y += pos[1]
+    return np.array([x, y])
+
+
+def get_spring_spiral(pos1, pos2):
+    t = np.linspace(0, 2 * np.pi, 43)
+    x = 0.1 * t * np.cos(1 * t)
+    y = 0.1 * t * np.sin(1 * t)
+    pass
 
 
 def main():
