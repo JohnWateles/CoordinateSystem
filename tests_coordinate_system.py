@@ -302,8 +302,8 @@ def test4():
     acs.add("OY", line2)
 
     line_length = 5
-    distance_to_point1 = 4
-    distance_to_point2 = 3.4
+    distance_to_point1 = 4.2
+    distance_to_point2 = 2.8
 
     s1 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
     line, = ax.plot([0, line_length], [0, 0], lw=3, color=(0.6, 0.2, 0.4))
@@ -345,8 +345,8 @@ def test4():
     acs.add("s_spring", s_spring)
 
     def frame(i):
-        coefficient1 = 0.02
-        coefficient2 = 0.05
+        coefficient1 = 0.01
+        coefficient2 = 0.025
         _phi1 = 390 * ((np.sin(coefficient1 * i)) / 2)
         _phi2 = 335 * ((np.sin(-coefficient2 * i) + 0.8) / 2)
 
@@ -386,6 +386,7 @@ def test4():
         new_pos_x = new_x - acs.x
         new_pos_y = new_y - acs.y
         acs.move_object("s_spring", [new_pos_x, new_pos_y])
+        s1.move_object("point", [1.2 * distance_to_point1 * ((np.sin(0.06 * i) + 1.5) / 3), 0])
 
         # !!! acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
         # !!! acs.rotate(np.pi / 360)
