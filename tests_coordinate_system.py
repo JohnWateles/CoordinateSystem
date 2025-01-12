@@ -292,28 +292,33 @@ def test4():
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
 
-    show_center = False     # or True
-    show_axes = False       # or True
+    show_center = False     #  or True
+    show_axes = False       #  or True
     acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=show_center)
 
+    # Добавляем кастомные оси чёрного цвета для удобства восприятия:
+    ###
     line1, = ax.plot([0, 5], [0, 0], lw=0.8, color=(0, 0, 0))
     line2, = ax.plot([0, 0], [0, 5], lw=0.8, color=(0, 0, 0))
     acs.add("OX", line1)
     acs.add("OY", line2)
+    ###
 
-    line_length = 5
-    distance_to_point1 = 4.2
-    distance_to_point2 = 2.8
+    line_length = 5             # Длина бордовых линий (можно изменить)
+    distance_to_point1 = 4.2    # Расстояние до точки в системе s1 (можно изменить)
+    distance_to_point2 = 2.8    # Расстояние до точки в системе s2 (можно изменить)
 
+    # Настраиваем начальные положения систем координат:
+    ###
     s1 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
-    line, = ax.plot([0, line_length], [0, 0], lw=3, color=(0.6, 0.2, 0.4))
-    point, = ax.plot([distance_to_point1], [0], "*", color=(0, 0, 0))
+    line, = ax.plot([0, line_length], [0, 0], lw=3, color=(0.6, 0.2, 0.4))  # Бордовая линия в s1
+    point, = ax.plot([distance_to_point1], [0], "*", color=(0, 0, 0))       # Точка для начала/конца пружины
     s1.add("line", line)
     s1.add("point", point)
 
     s2 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
-    line, = ax.plot([0, line_length], [0, 0], lw=3, color=(0.6, 0.2, 0.4))
-    point, = ax.plot([distance_to_point2], [0], "*", color=(0, 0, 0))
+    line, = ax.plot([0, line_length], [0, 0], lw=3, color=(0.6, 0.2, 0.4))  # Бордовая линия в s2
+    point, = ax.plot([distance_to_point2], [0], "*", color=(0, 0, 0))       # Точка для конца/начала пружины
     s2.add("line", line)
     s2.add("point", point)
 
@@ -326,23 +331,26 @@ def test4():
     acs.rotate_to_local_angle("s1", phi2)
     acs.rotate_to_local_angle("s2", phi1)
 
+    # Создаём систему координат для пружины
     s_spring = CoordinateSystem(ax, show_center=show_center, color=(0.5, 0.5, 0.5), show_axes=show_axes)
 
-    point1 = s1.get("point").get_data()  # ([...], [...])
-    point2 = s2.get("point").get_data()  # ([...], [...])
+    # Добавляем пружину
+    point1 = s1.get("point").get_data()  # ([...], [...]) Точка начала/конца
+    point2 = s2.get("point").get_data()  # ([...], [...]) Точка конца/начала
     vector = [point1[0][0] - point2[0][0], point1[1][0] - point2[1][0]]
-    distance = np.sqrt((vector[0]) ** 2 + (vector[1]) ** 2)
-    vector = [vector[0] / distance, vector[1] / distance]
+    distance = np.sqrt((vector[0]) ** 2 + (vector[1]) ** 2)     # Расстояние между точками - длина пружины
+    vector = [vector[0] / distance, vector[1] / distance]       # Нормализуем вектор (на всякий)
     e_vector = [1, 0]
-    alpha = np.arccos(vector[0] * e_vector[0] + vector[1] * e_vector[1]) * (180 / np.pi)
+    alpha = np.arccos(vector[0] * e_vector[0] + vector[1] * e_vector[1]) * (180 / np.pi)    # Ищем угол наклона
     spring_xy = get_spring_line(distance, 15, 0.5)
-    spring, = ax.plot(spring_xy[0], spring_xy[1], color=(0.5, 0.5, 0.5))
+    spring, = ax.plot(spring_xy[0], spring_xy[1], color=(0.5, 0.5, 0.5))    # Рисуем пружину
 
-    s_spring.add("spring", spring)
-    s_spring.move([point1[0][0], point1[1][0]])
-    s_spring.rotate_to_angle(alpha - 180)
+    s_spring.add("spring", spring)  # Добавляем график пружины в систему координат для пружины
+    s_spring.move([point1[0][0], point1[1][0]])     # Переносим систему в точку point1
+    s_spring.rotate_to_angle(alpha - 180)           # Поворот системы на необходимый угол
 
-    acs.add("s_spring", s_spring)
+    acs.add("s_spring", s_spring)   # Добавляем в абсолютную систему
+    ###
 
     def frame(i):
         coefficient1 = 0.01
@@ -350,19 +358,20 @@ def test4():
         _phi1 = 390 * ((np.sin(coefficient1 * i)) / 2)
         _phi2 = 335 * ((np.sin(-coefficient2 * i) + 0.8) / 2)
 
-        # _phi1 = 30
-        # _phi2 = 67
-        acs.rotate_to_local_angle("s1", _phi2)
-        acs.rotate_to_local_angle("s2", _phi1)
-
-        _s_spring = acs.get("s_spring")
-        _point1 = acs.get("s1").get("point").get_data()
-        _point2 = acs.get("s2").get("point").get_data()
+        # Повторяем действия при настройке начальных положений с некоторыми изменениями:
+        ###
+        acs.rotate_to_local_angle("s1", _phi2)  # Поворачиваем систему s1 на соответствующий угол
+        acs.rotate_to_local_angle("s2", _phi1)  # Поворачиваем систему s2 на соответствующий угол
+        _s_spring = acs.get("s_spring")     # Получаем объект системы координат для пружины
+        _point1 = acs.get("s1").get("point").get_data()     # Получаем координаты точки начала/конца пружины
+        _point2 = acs.get("s2").get("point").get_data()     # Получаем координаты точки конца/начала пружины
         _vector = [_point1[0][0] - _point2[0][0], _point1[1][0] - _point2[1][0]]
-        _distance = math.sqrt((_vector[0]) ** 2 + (_vector[1]) ** 2)
-        _vector = [_vector[0] / _distance, _vector[1] / _distance]
-        _e_vector = [1 * np.cos(acs.angle), 1 * np.sin(acs.angle)]
-        _alpha = np.arccos(_vector[0] * _e_vector[0] + _vector[1] * _e_vector[1]) * (180 / np.pi)
+        _distance = math.sqrt((_vector[0]) ** 2 + (_vector[1]) ** 2)    # Длина пружины
+        _vector = [_vector[0] / _distance, _vector[1] / _distance]      # Нормализуем
+        _e_vector = [1 * np.cos(acs.angle), 1 * np.sin(acs.angle)]      # Единичный вектор
+        _alpha = np.arccos(_vector[0] * _e_vector[0] + _vector[1] * _e_vector[1]) * (180 / np.pi)   # Угол поворота
+
+        # Создаём пружину уже повёрнутую на угол (_s_spring.angle), соответствующий текущему углу системы _s_spring
         _spring_xy = get_spring_line(_distance, 15, 0.5, pos=_s_spring.xy, angle=_s_spring.angle,
                                      center=acs.center)
         _s_spring.get("spring").set_data(_spring_xy)
@@ -373,8 +382,9 @@ def test4():
         _point1 = (np.array([_point1[0]]), np.array([_point1[1]]))
         _point2 = (np.array([_point2[0]]), np.array([_point2[1]]))
         """
-
-        new_xy = max(_point1, _point2, key=lambda mas: mas[1][0])   # Ищем точку с максимальным значением по y
+        # Ищем точку с максимальным значением по y (тк иначе всё плохо работает, вероятно, из-за области \
+        # значений функции np.arccos()), чтобы переместить туда систему координат пружины (_s_spring)
+        new_xy = max(_point1, _point2, key=lambda mas: mas[1][0])
         new_x = new_xy[0]
         new_y = new_xy[1]
         if _point2 is new_xy:
@@ -382,14 +392,14 @@ def test4():
         else:
             _alpha += 180
 
-        acs.rotate_to_local_angle("s_spring", _alpha)
+        acs.rotate_to_local_angle("s_spring", _alpha)   # Поворачиваем систему координат пружины на нужный угол
         new_pos_x = new_x - acs.x
         new_pos_y = new_y - acs.y
-        acs.move_object("s_spring", [new_pos_x, new_pos_y])
-        s1.move_object("point", [1.2 * distance_to_point1 * ((np.sin(0.06 * i) + 1.5) / 3), 0])
+        acs.move_object("s_spring", [new_pos_x, new_pos_y])     # Перемещаем систему координат пружины в нужную точку
 
-        # !!! acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
-        # !!! acs.rotate(np.pi / 360)
+        # Меняем положение точки начала/конца пружины (можно закомментировать, тогда точка будет статичной)
+        s1.move_object("point", [1.2 * distance_to_point1 * ((np.sin(0.06 * i) + 1.5) / 3), 0])
+        ###
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
@@ -400,11 +410,16 @@ def test5():
     figure = plt.figure(figsize=[8, 8])
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
+
     show_center = False     # or True
     show_axes = False       # or True
-    acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=True, show_axes=show_axes)
 
+    acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=True, show_axes=show_axes)
     s1 = CoordinateSystem(ax, center=(0, 0), show_center=show_center, show_axes=show_axes)
+    s2 = CoordinateSystem(ax, center=(0, 0), color=(0, 0, 0), show_center=True, show_axes=show_axes)
+
+    # Инициализация начальных положений систем координат:
+    ####################################################################################################################
     acs.add("s1", s1)
 
     radius1 = 4
@@ -429,8 +444,8 @@ def test5():
     s1.add("rectangle2", rectangle2)
     s1.add("rectangle3", rectangle3)
     s1.add("rectangle4", rectangle4)
+    s1.add("s2", s2)
 
-    s2 = CoordinateSystem(ax, center=(0, 0), color=(0, 0, 0), show_center=True, show_axes=show_axes)
     line_length = 3
     line, = ax.plot([0, 0], [0, -line_length], lw=2, color=(0, 0, 0))
     radius2 = 0.7
@@ -439,18 +454,20 @@ def test5():
     s2.add("lineAB", line)
     s2.add("small_circle", small_circle)
     s2.move([-2, 1])
-    s1.add("s2", s2)
+    ####################################################################################################################
 
     def frame(i):
-        # return
         phi = 3 * i
         psi = 30 * np.sin(0.1 * i)
+
+        # Поворот системы s1 на угол phi
         acs.rotate_to_local_angle("s1", phi)
+
+        # Поворот системы s2 на угол psi (+ угол абсолютной системы координат acs, нужно если acs также будет вращаться)
         acs.get("s1").get("s2").rotate_to_angle(psi + (180 / np.pi) * acs.angle)
 
         acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
-        # acs.rotate(np.pi / 360)
-        pass
+        # acs.rotate(np.pi / 180)
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
@@ -510,17 +527,18 @@ def test6():
     def init_acs():
         acs.add("s2", s2)
 
-    init_s1()
-    init_s2()
-    init_acs()
+    init_s1()   # Инициализация начального положения системы s1
+    init_s2()   # Инициализация начального положения системы s2
+    init_acs()  # Инициализация начального положения абсолютной системы координат acs
 
     def frame(i):
-        # return
         x_t = (length1 / 2 - rect_width) * np.sin(0.09 * i) - rect_width / 2
         phi = 90 * (np.sin(0.015 * i))
 
-        s1.move_object("rectangle", [x_t, 0])   # Сначала двигаем прямоугольник, иначе появляется задержка
+        # Сдвигаем прямоугольник
+        s1.move_object("rectangle", [x_t, 0])   # Сначала двигаем прямоугольник, иначе появляется задержка у пружин
 
+        # Ищем позиции ключевых точек
         xy = s1.get("short_line1").get_data()
         pos1 = ((xy[0][0] + xy[0][1]) / 2, (xy[1][0] + xy[1][1]) / 2)
         xy = s1.get("short_line2").get_data()
@@ -528,9 +546,12 @@ def test6():
         corners = s1.get("rectangle").get_corners()
         pos2 = ((corners[1][0] + corners[2][0]) / 2, (corners[1][1] + corners[2][1]) / 2)
         pos4 = ((corners[0][0] + corners[3][0]) / 2, (corners[0][1] + corners[3][1]) / 2)
+
+        # Ищем длину левой и правой пружин
         first_length = np.sqrt((pos1[0] - pos4[0]) ** 2 + (pos1[1] - pos4[1]) ** 2)
         second_length = np.sqrt((pos2[0] - pos3[0]) ** 2 + (pos2[1] - pos3[1]) ** 2)
 
+        # Изменяем положения пружин
         epsilon = 0.03  # Чтоб прям красиво было
         spring_xy = get_spring_line(first_length - epsilon, spring_coils, spring_diameter,
                                     pos=pos1, angle=acs.get("s2").angle)
@@ -540,11 +561,8 @@ def test6():
                                     pos=(pos2[0] + epsilon, pos2[1]), angle=acs.get("s2").angle)
         s1.get("spring2").set_data(spring_xy)
 
+        # Поворачиваем систему s2 на угол phi
         acs.rotate_to_local_angle("s2", phi)
-
-        # acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
-        # acs.rotate(np.pi / 360)
-        pass
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
@@ -557,14 +575,15 @@ def test7():
 
     ax.plot([0, 0], [-10, 10], "--", lw=1)
 
-    show_center = False
-    show_axes = False
-    acs = CoordinateSystem(ax, color=(1, 0, 0), show_center=show_center)
-
+    show_center = False     # or True
+    show_axes = False       # or True
+    acs = CoordinateSystem(ax, color=(1, 0, 0), show_center=show_center, show_axes=show_axes)
     s1 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    s2 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+
     radius1 = 0.2
     circle1 = plt.Circle((0, 0), radius1, color=(0, 0, 0))
-    s1.add("circle1", circle1)
+    s1.add("point", circle1)
 
     line1_length = 1
     line2_length = 3
@@ -573,7 +592,6 @@ def test7():
     abs_line, = ax.plot([0, 0], [line1_length, line1_length + line2_length], lw=5, color=(0, 0, 0))
     s1.add("abs_line", abs_line)
 
-    s2 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
     line, = ax.plot([0, 0], [0, line1_length], lw=5, color=(0, 0, 0))
     radius2 = 0.2
     circle2 = plt.Circle((0, line1_length), radius2, color=(0, 0, 0))
@@ -590,16 +608,24 @@ def test7():
         acs.rotate_to_local_angle("s2", alpha1)
 
         curX, curY = acs.get("s2").get("point").center
+        # curX, curY = CoordinateSystem._rot2d(None, curX, curY, acs.angle, center=acs.center)
         curX, curY = curX - acs.x, curY - acs.y
-
         newX = 0
         newY = np.sqrt(line2_length ** 2 - curX ** 2) + curY
         alpha = -(180 / np.pi) * np.arcsin((line1_length / line2_length) * np.sin((np.pi / 180) * alpha1))
-        acs.rotate_to_local_angle("s1", alpha)
+
+        # if alpha > 180:
+        #     alpha = -alpha
+
         acs.move_object("s1", [newX, newY])
 
-        # acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
-        # acs.rotate(np.pi / 180)
+        # xy1 = acs.get("s1").get("point").center
+        # xy2 = acs.get("s2").get("point").center
+        # acs.get("s1").get("abs_line").set_data([xy1[0], xy2[0]], [xy1[1], xy2[1]])
+        acs.rotate_to_local_angle("s1", alpha)
+
+        # !!! acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
+        # !!! acs.rotate(-np.pi / 180)
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()

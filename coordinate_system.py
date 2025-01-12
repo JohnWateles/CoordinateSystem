@@ -104,7 +104,7 @@ class CoordinateSystem:
 
     def add(self, name: str, any_object):
         """
-        Добавляет в систему объект (с его законами движение при необходимости)
+        Добавляет в систему объект
         :param name:
         :param any_object:
         :return:
