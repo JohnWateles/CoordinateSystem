@@ -218,7 +218,7 @@ def test3():
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[0, 15], ylim=[0, 15])
 
-    # Начальное расположение объектов, настройка зависимостей
+    # Начальное расположение объектов, настройка зависимостей:
     ###
     length = 10
     rectangle_width = 6
@@ -474,6 +474,7 @@ def test5():
 
 
 def test6():
+    # 29
     figure = plt.figure(figsize=[8, 8])
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
