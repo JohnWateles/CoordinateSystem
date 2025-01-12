@@ -2,6 +2,7 @@ import numpy as np
 # import sympy as sp
 import matplotlib.pyplot as plt
 # from matplotlib.animation import FuncAnimation
+import matplotlib.patches as patches
 import matplotlib.lines as mat_lines
 from time import perf_counter
 import ctypes
@@ -25,6 +26,8 @@ _coord_sys_funcs = ctypes.WinDLL("./coord_sys_funcs.dll")
 _coord_sys_funcs.rotation2D.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double,
                                         ctypes.c_double, ctypes.c_double,
                                         ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double)]
+
+type CoordSys = CoordinateSystem    # Для адекватной аннотации типа
 
 
 class CoordinateSystem:
@@ -94,7 +97,7 @@ class CoordinateSystem:
         value = value % (2 * np.pi)
         self.__angle = value
 
-    def get(self, name: str):
+    def get(self, name: str) -> CoordSys | plt.Line2D | plt.Circle | plt.Rectangle:
         """
         Возвращает объект по имени name
         :param name:
@@ -111,7 +114,7 @@ class CoordinateSystem:
         """
         self.object_names[name] = (any_object, )
         self.__last = name
-        if isinstance(any_object, (plt.Rectangle, plt.Circle)):
+        if isinstance(any_object, patches.Patch):
             self.ax.add_patch(any_object)
 
     # @show_execution_time
