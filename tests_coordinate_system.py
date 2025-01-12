@@ -474,7 +474,7 @@ def test5():
 
 
 def test6():
-    # 29
+    # 39
     figure = plt.figure(figsize=[8, 8])
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
