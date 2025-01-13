@@ -533,11 +533,15 @@ def test6():
     init_acs()  # Инициализация начального положения абсолютной системы координат acs
 
     def frame(i):
-        x_t = (length1 / 2 - rect_width) * np.sin(0.09 * i) - rect_width / 2
-        phi = 90 * (np.sin(0.015 * i))
+        x_t = -(length1 / 2 - rect_width) * np.sin(0.05 * i) - rect_width / 2
 
-        # Сдвигаем прямоугольник
-        s1.move_object("rectangle", [x_t, 0])   # Сначала двигаем прямоугольник, иначе появляется задержка у пружин
+        phi = 90 * (np.sin(0.03 * i))
+
+        # Попытка добавить реалистичность движения
+        x_t_endure = 0.8 * (-np.cos((np.pi / 180) * phi / 2) - np.sin((np.pi / 180) * phi / 2) + rect_width / 2)
+
+        # Сначала двигаем прямоугольник, иначе появляется задержка у пружин
+        s1.move_object("rectangle", [x_t + x_t_endure, 0])
 
         # Ищем позиции ключевых точек
         xy = s1.get("short_line1").get_data()
@@ -553,7 +557,7 @@ def test6():
         second_length = np.sqrt((pos2[0] - pos3[0]) ** 2 + (pos2[1] - pos3[1]) ** 2)
 
         # Изменяем положения пружин
-        epsilon = 0.03  # Чтоб прям красиво было
+        epsilon = 0.02  # Чтоб прям красиво было
         spring_xy = get_spring_line(first_length - epsilon, spring_coils, spring_diameter,
                                     pos=pos1, angle=acs.get("s2").angle)
         s1.get("spring1").set_data(spring_xy)
