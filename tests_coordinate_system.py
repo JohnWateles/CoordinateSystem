@@ -533,15 +533,12 @@ def test6():
     init_acs()  # Инициализация начального положения абсолютной системы координат acs
 
     def frame(i):
-        x_t = -(length1 / 2 - rect_width) * np.sin(0.05 * i) - rect_width / 2
+        x_t = -(length1 / 2 - rect_width) * np.sin(0.07 * i) - rect_width / 2
 
-        phi = 90 * (np.sin(0.03 * i))
-
-        # Попытка добавить реалистичность движения
-        x_t_endure = 0.8 * (-np.cos((np.pi / 180) * phi / 2) - np.sin((np.pi / 180) * phi / 2) + rect_width / 2)
+        phi = 90 * (np.sin(0.02 * i))
 
         # Сначала двигаем прямоугольник, иначе появляется задержка у пружин
-        s1.move_object("rectangle", [x_t + x_t_endure, 0])
+        s1.move_object("rectangle", [x_t, 0])
 
         # Ищем позиции ключевых точек
         xy = s1.get("short_line1").get_data()
