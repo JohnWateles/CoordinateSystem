@@ -328,11 +328,63 @@ def get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=(0, 
     return np.array([x, y])
 
 
-def get_spring_spiral(pos1, pos2):
-    t = np.linspace(0, 2 * np.pi, 43)
-    x = 0.1 * t * np.cos(1 * t)
-    y = 0.1 * t * np.sin(1 * t)
-    pass
+class SpiralSpring:
+    def __init__(self, ax, pos1: tuple | list, pos2: tuple | list, coils=1, **kwargs):
+        self.ax = ax
+        self.__angle = 0
+        self.__coils = coils
+        self.__pos1 = pos1
+        self.__pos2 = pos2
+        spring_xy, _ = self.get_spring_spiral(pos1, pos2)
+        self.__line2D, = ax.plot(spring_xy[0], spring_xy[1], **kwargs)
+
+    @property
+    def angle(self):
+        return self.__angle
+
+    @angle.setter
+    def angle(self, value):
+        value %= 2 * np.pi
+        self.__angle = value
+
+    def get_spring_spiral(self, pos1: tuple | list, pos2: tuple | list):
+        x1, y1 = pos1
+        x2, y2 = pos2
+        delta_x = x2 - x1
+        delta_y = y2 - y1
+        t_max = np.sqrt(delta_x ** 2 + delta_y ** 2)
+
+        coils = int(self.__coils)
+
+        if delta_y > 0:
+            phi = np.arccos(delta_x / t_max) + coils * 2 * np.pi
+        elif delta_x < 0:
+            phi = -np.arcsin(delta_y / t_max) + coils * 2 * np.pi + np.pi
+        else:
+            phi = np.arcsin(delta_y / t_max) + coils * 2 * np.pi + 2 * np.pi
+
+        help_value = (phi % (2 * np.pi))
+        if ((3 * np.pi) / 2 < self.__angle < 2 * np.pi) and (0 < help_value < (np.pi / 2)):
+            self.__coils += 1
+            phi += 2 * np.pi
+        elif ((3 * np.pi) / 2 < help_value < 2 * np.pi) and (0 < self.__angle < (np.pi / 2)):
+            self.__coils -= 1
+            phi -= 2 * np.pi
+        coefficient = (phi / t_max)
+        t = np.linspace(0, t_max, 127)
+        x = t * np.cos(coefficient * t)
+        y = t * np.sin(coefficient * t)
+        x += pos1[0]
+        y += pos1[1]
+        return np.array([x, y]), phi
+
+    def update(self, pos1: tuple | list, pos2: tuple | list):
+        spring_xy, phi = self.get_spring_spiral(pos1, pos2)
+        self.angle = phi
+        self.__line2D.set_data(spring_xy[0], spring_xy[1])
+        self.__pos1 = pos1
+        self.__pos2 = pos2
+        return self
 
 
 def main():

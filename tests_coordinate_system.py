@@ -2,7 +2,7 @@ import numpy as np
 import sympy as sp
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from coordinate_system import CoordinateSystem, get_spring_line, show_execution_time
+from coordinate_system import CoordinateSystem, SpiralSpring, get_spring_line, show_execution_time
 from time import perf_counter
 import math
 
@@ -411,12 +411,12 @@ def test5():
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
 
-    show_center = False     # or True
-    show_axes = False       # or True
+    show_center = False     #  or True
+    show_axes = False       #  or True
 
     acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=True, show_axes=show_axes)
     s1 = CoordinateSystem(ax, center=(0, 0), show_center=show_center, show_axes=show_axes)
-    s2 = CoordinateSystem(ax, center=(0, 0), color=(0, 0, 0), show_center=True, show_axes=show_axes)
+    s2 = CoordinateSystem(ax, center=(0, 0), show_center=show_center, show_axes=show_axes)
 
     # Инициализация начальных положений систем координат:
     ####################################################################################################################
@@ -451,9 +451,18 @@ def test5():
     radius2 = 0.7
     small_circle = plt.Circle([0, -line_length], radius2, color=(0, 0, 0))
     small_circle.set_zorder(2)  # Чтобы круг рисовался поверх других объектов
+    distance = 0.55  # От расстояния до точки будет зависеть размер спиральной пружины
+    point, = ax.plot([s2.x], [s2.y - distance])
     s2.add("lineAB", line)
     s2.add("small_circle", small_circle)
+    s2.add("point", point)
     s2.move([-2, 1])
+
+    position = s2.get("point").get_data()
+    pos_x = position[0][0]
+    pos_y = position[1][0]
+    coils = 2
+    spiral_spring = SpiralSpring(ax, s2.center, [pos_x, pos_y], coils, color=(0.4, 0.3, 0.2))
     ####################################################################################################################
 
     def frame(i):
@@ -465,6 +474,12 @@ def test5():
 
         # Поворот системы s2 на угол psi (+ угол абсолютной системы координат acs, нужно если acs также будет вращаться)
         acs.get("s1").get("s2").rotate_to_angle(psi + (180 / np.pi) * acs.angle)
+
+        # Отрисовка спиральной пружины
+        _position = s2.get("point").get_data()
+        _pos_x = _position[0][0]
+        _pos_y = _position[1][0]
+        spiral_spring.update(acs.get("s1").get("s2").center, [_pos_x, _pos_y])
 
         acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
         # acs.rotate(np.pi / 180)
@@ -628,6 +643,45 @@ def test7():
 
         # !!! acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
         # !!! acs.rotate(-np.pi / 180)
+
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
+    plt.show()
+
+
+def test8():
+    figure = plt.figure(figsize=[8, 8])
+    ax = figure.add_subplot()
+    ax.set(xlim=[-10, 10], ylim=[-10, 10])
+    show_center = True
+    show_axes = True
+    acs = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+
+    coordinates1 = [1, 0]
+
+    s1 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    point, = ax.plot([coordinates1[0]], [coordinates1[1]], "o")
+    s1.add("point", point)
+
+    coils = 2
+
+    spiral_spring = SpiralSpring(ax, [0, 0], coordinates1, coils)
+    # spiral_spring_xy = get_spring_spiral([0, 0], coordinates1, coils)
+    # line, = ax.plot(spiral_spring_xy[0], spiral_spring_xy[1])
+    # acs.add("spiral_spring", line)
+    acs.add("s1", s1)
+    # acs.get("s1").move([1, 1])
+
+    def frame(i):
+        acs.get("s1").rotate_to_angle(-670 * (np.sin(0.01 * i) - 570))
+        new_pos = acs.get("s1").get("point").get_data()
+        new_x = new_pos[0][0]
+        new_y = new_pos[1][0]
+        # _spiral_spring_xy = get_spring_spiral(acs.get("s1").center, [new_x, new_y], coils)
+        # acs.get("spiral_spring").set_data(_spiral_spring_xy[0], _spiral_spring_xy[1])
+        spiral_spring.update(acs.get("s1").center, [new_x, new_y])
+        acs.move_object("s1", [3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
+        acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
+        pass
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
