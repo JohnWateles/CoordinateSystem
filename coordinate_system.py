@@ -364,6 +364,7 @@ class SpiralSpring:
             phi = np.arcsin(delta_y / t_max) + coils * 2 * np.pi + 2 * np.pi
 
         help_value = (phi % (2 * np.pi))
+        # Мб добавить проверку на [(help_value + self.__angle) % (2 * np.pi)] < epsilon
         if ((3 * np.pi) / 2 < self.__angle < 2 * np.pi) and (0 < help_value < (np.pi / 2)):
             self.__coils += 1
             phi += 2 * np.pi

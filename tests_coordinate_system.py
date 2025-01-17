@@ -411,8 +411,8 @@ def test5():
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
 
-    show_center = False     #  or True
-    show_axes = False       #  or True
+    show_center = False     # or True
+    show_axes = False       # or True
 
     acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=True, show_axes=show_axes)
     s1 = CoordinateSystem(ax, center=(0, 0), show_center=show_center, show_axes=show_axes)
@@ -620,25 +620,16 @@ def test7():
     # acs.add("abs_line", abs_line)
 
     def frame(i):
-        # return
         alpha1 = (180 * (0.05 * i) + 90) % 360
         acs.rotate_to_local_angle("s2", alpha1)
 
         curX, curY = acs.get("s2").get("point").center
-        # curX, curY = CoordinateSystem._rot2d(None, curX, curY, acs.angle, center=acs.center)
         curX, curY = curX - acs.x, curY - acs.y
         newX = 0
         newY = np.sqrt(line2_length ** 2 - curX ** 2) + curY
         alpha = -(180 / np.pi) * np.arcsin((line1_length / line2_length) * np.sin((np.pi / 180) * alpha1))
 
-        # if alpha > 180:
-        #     alpha = -alpha
-
         acs.move_object("s1", [newX, newY])
-
-        # xy1 = acs.get("s1").get("point").center
-        # xy2 = acs.get("s2").get("point").center
-        # acs.get("s1").get("abs_line").set_data([xy1[0], xy2[0]], [xy1[1], xy2[1]])
         acs.rotate_to_local_angle("s1", alpha)
 
         # !!! acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
@@ -648,7 +639,7 @@ def test7():
     plt.show()
 
 
-def test8():
+def test_spiral_spring():
     figure = plt.figure(figsize=[8, 8])
     ax = figure.add_subplot()
     ax.set(xlim=[-10, 10], ylim=[-10, 10])
@@ -663,25 +654,18 @@ def test8():
     s1.add("point", point)
 
     coils = 2
-
     spiral_spring = SpiralSpring(ax, [0, 0], coordinates1, coils)
-    # spiral_spring_xy = get_spring_spiral([0, 0], coordinates1, coils)
-    # line, = ax.plot(spiral_spring_xy[0], spiral_spring_xy[1])
-    # acs.add("spiral_spring", line)
+
     acs.add("s1", s1)
-    # acs.get("s1").move([1, 1])
 
     def frame(i):
         acs.get("s1").rotate_to_angle(-670 * (np.sin(0.01 * i) - 570))
         new_pos = acs.get("s1").get("point").get_data()
         new_x = new_pos[0][0]
         new_y = new_pos[1][0]
-        # _spiral_spring_xy = get_spring_spiral(acs.get("s1").center, [new_x, new_y], coils)
-        # acs.get("spiral_spring").set_data(_spiral_spring_xy[0], _spiral_spring_xy[1])
         spiral_spring.update(acs.get("s1").center, [new_x, new_y])
         acs.move_object("s1", [3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
         acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
-        pass
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
