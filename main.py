@@ -3,6 +3,7 @@ from tests_coordinate_system import *
 
 def main():
     current_test = "_rotate_to_local_angle"
+    current_test = "_spiral_spring"
     current_test = 0
     if current_test:
         exec(f"test{current_test}()")

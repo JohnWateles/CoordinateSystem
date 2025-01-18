@@ -105,6 +105,14 @@ class CoordinateSystem:
         """
         return self.object_names[name][0]
 
+    def __getitem__(self, name) -> CoordSys | plt.Line2D | plt.Circle | plt.Rectangle:
+        """
+        Возвращает объект по имени name
+        :param name:
+        :return:
+        """
+        return self.object_names[name][0]
+
     def add(self, name: str, any_object):
         """
         Добавляет в систему объект
@@ -335,7 +343,7 @@ class SpiralSpring:
         self.__coils = coils
         self.__pos1 = pos1
         self.__pos2 = pos2
-        spring_xy, _ = self.get_spring_spiral(pos1, pos2)
+        spring_xy, _ = self.__get_spring_spiral(pos1, pos2)
         self.__line2D, = ax.plot(spring_xy[0], spring_xy[1], **kwargs)
 
     @property
@@ -347,7 +355,7 @@ class SpiralSpring:
         value %= 2 * np.pi
         self.__angle = value
 
-    def get_spring_spiral(self, pos1: tuple | list, pos2: tuple | list):
+    def __get_spring_spiral(self, pos1: tuple | list, pos2: tuple | list):
         x1, y1 = pos1
         x2, y2 = pos2
         delta_x = x2 - x1
@@ -380,7 +388,7 @@ class SpiralSpring:
         return np.array([x, y]), phi
 
     def update(self, pos1: tuple | list, pos2: tuple | list):
-        spring_xy, phi = self.get_spring_spiral(pos1, pos2)
+        spring_xy, phi = self.__get_spring_spiral(pos1, pos2)
         self.angle = phi
         self.__line2D.set_data(spring_xy[0], spring_xy[1])
         self.__pos1 = pos1

@@ -623,7 +623,7 @@ def test7():
         alpha1 = (180 * (0.05 * i) + 90) % 360
         acs.rotate_to_local_angle("s2", alpha1)
 
-        curX, curY = acs.get("s2").get("point").center
+        curX, curY = acs["s2"]["point"].center
         curX, curY = curX - acs.x, curY - acs.y
         newX = 0
         newY = np.sqrt(line2_length ** 2 - curX ** 2) + curY
@@ -660,12 +660,12 @@ def test_spiral_spring():
 
     def frame(i):
         acs.get("s1").rotate_to_angle(-670 * (np.sin(0.01 * i) - 570))
+        # acs.move_object("s1", [3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
         new_pos = acs.get("s1").get("point").get_data()
         new_x = new_pos[0][0]
         new_y = new_pos[1][0]
         spiral_spring.update(acs.get("s1").center, [new_x, new_y])
-        acs.move_object("s1", [3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
-        acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
+        # acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
