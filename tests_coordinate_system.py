@@ -458,7 +458,7 @@ def test5():
     s2.add("point", point)
     s2.move([-2, 1])
 
-    position = s2.get("point").get_data()
+    position = s2["point"].get_data()
     pos_x = position[0][0]
     pos_y = position[1][0]
     coils = 2
@@ -472,17 +472,16 @@ def test5():
         # Поворот системы s1 на угол phi
         acs.rotate_to_local_angle("s1", phi)
 
-        # Поворот системы s2 на угол psi (+ угол абсолютной системы координат acs, нужно если acs также будет вращаться)
-        acs.get("s1").get("s2").rotate_to_angle(psi + (180 / np.pi) * acs.angle)
+        # Поворот системы s2 на угол psi
+        acs["s1"]["s2"].rotate_to_angle(psi)
+
+        acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])  # Не обязательно
 
         # Отрисовка спиральной пружины
-        _position = s2.get("point").get_data()
+        _position = s2["point"].get_data()
         _pos_x = _position[0][0]
         _pos_y = _position[1][0]
-        spiral_spring.update(acs.get("s1").get("s2").center, [_pos_x, _pos_y])
-
-        acs.move([3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
-        # acs.rotate(np.pi / 180)
+        spiral_spring.update(acs["s1"]["s2"].center, [_pos_x, _pos_y])
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
@@ -659,13 +658,14 @@ def test_spiral_spring():
     acs.add("s1", s1)
 
     def frame(i):
-        acs.get("s1").rotate_to_angle(-670 * (np.sin(0.01 * i) - 570))
-        # acs.move_object("s1", [3 * np.sin(0.01 * i), 3 * np.cos(0.01 * i)])
+        acs["s1"].rotate_to_angle(-670 * (np.sin(0.03 * i) - 570))
+        acs.move_object("s1", [3 * np.sin(0.02 * i), 3 * np.cos(0.02 * i)])
+        acs.move([3 * np.cos(0.02 * i), 3 * np.sin(0.02 * i)])
+
         new_pos = acs.get("s1").get("point").get_data()
         new_x = new_pos[0][0]
         new_y = new_pos[1][0]
         spiral_spring.update(acs.get("s1").center, [new_x, new_y])
-        # acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()

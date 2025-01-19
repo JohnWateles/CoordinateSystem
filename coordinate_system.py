@@ -388,6 +388,13 @@ class SpiralSpring:
         return np.array([x, y]), phi
 
     def update(self, pos1: tuple | list, pos2: tuple | list):
+        """
+        Обновляет положение спиральной пружины.
+        (Лучше вызывать этот метод самым последним при анимировании)
+        :param pos1:
+        :param pos2:
+        :return:
+        """
         spring_xy, phi = self.__get_spring_spiral(pos1, pos2)
         self.angle = phi
         self.__line2D.set_data(spring_xy[0], spring_xy[1])
