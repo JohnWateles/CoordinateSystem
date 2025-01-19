@@ -97,15 +97,13 @@ class CoordinateSystem:
         value = value % (2 * np.pi)
         self.__angle = value
 
-    """
     def get(self, name: str) -> CoordSys | plt.Line2D | plt.Circle | plt.Rectangle:
-        \"""
+        """
         Возвращает объект по имени name
         :param name:
         :return:
-        ""\"
+        """
         return self.object_names[name][0]
-    """
 
     def __getitem__(self, name) -> CoordSys | plt.Line2D | plt.Circle | plt.Rectangle:
         """
