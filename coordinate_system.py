@@ -275,44 +275,6 @@ class CoordinateSystem:
         return _new_x_, _new_y_
 
 
-def __get_spring_line(length, coils, diameter, pos=(0, 0)):
-    """
-    Создаёт пружину по координатам pos
-    :param length:
-    :param coils:
-    :param diameter:
-    :param pos:
-    :return:
-    """
-    x = np.linspace(0 + pos[0], length + pos[0], coils * 2)
-    y = [(diameter * 0.5 * (-1) ** i) + pos[1] for i in range(len(x))]
-    return np.array([x, y])
-
-
-def ___get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=(0, 0)):
-    """
-    Создаёт пружину по координатам pos, наклонённую на угол angle вокруг центра center
-    :param length:
-    :param coils:
-    :param diameter:
-    :param pos:
-    :param angle: Угол в радианах
-    :param center:
-    :return:
-    """
-    x = np.linspace(0 + pos[0], length + pos[0], coils * 2)
-    y = [-np.sign(i) * (diameter * 0.5 * (-1) ** i) + pos[1] if (i != (len(x) - 1)) else pos[1] for i in range(len(x))]
-    if angle is not None:
-        rotated_x = list()
-        rotated_y = list()
-        for _x, _y in zip(x, y):
-            new_x, new_y = CoordinateSystem._rot2d(None, _x, _y, angle, center)
-            rotated_x.append(new_x)
-            rotated_y.append(new_y)
-        return np.array([rotated_x, rotated_y])
-    return np.array([x, y])
-
-
 def get_spring_line(length, coils, diameter, pos=(0, 0), angle=None, center=(0, 0)):
     """
     Создаёт пружину по координатам pos, наклонённую на угол angle вокруг центра center
