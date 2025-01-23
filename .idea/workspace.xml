@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/coordinate_system.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests_coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests_coordinate_system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,14 +96,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1735491126375</updated>
-    </task>
-    <task id="LOCAL-00006" summary="Добавил логику работы с plt.Circle">
-      <option name="closed" value="true" />
-      <created>1735633104490</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1735633104490</updated>
     </task>
     <task id="LOCAL-00007" summary="Вариант 30 ТЕРМЕХ (test3())">
       <option name="closed" value="true" />
@@ -491,7 +481,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737381634750</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="Исправления">
+      <option name="closed" value="true" />
+      <created>1737648411337</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1737648411337</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

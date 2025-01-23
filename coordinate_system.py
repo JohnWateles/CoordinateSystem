@@ -205,13 +205,13 @@ class CoordinateSystem:
                 obj.set_data(x, y)
             elif isinstance(obj, plt.Rectangle):
                 x1, y1 = obj.xy
-                obj.xy = x1 + new_position[0] - self.center[0], y1 + new_position[1] - self.center[1]
+                obj.xy = x1 + new_position[0] - self.x, y1 + new_position[1] - self.y
             elif isinstance(obj, plt.Circle):
                 x1, y1 = obj.center
-                obj.center = x1 + new_position[0] - self.center[0], y1 + new_position[1] - self.center[1]
+                obj.center = x1 + new_position[0] - self.x, y1 + new_position[1] - self.y
             elif isinstance(obj, CoordinateSystem):
-                new_x = obj.x + new_position[0] - self.center[0]
-                new_y = obj.y + new_position[1] - self.center[1]
+                new_x = obj.x + new_position[0] - self.x
+                new_y = obj.y + new_position[1] - self.y
                 obj.move([new_x, new_y])
         self.center = new_position
 
