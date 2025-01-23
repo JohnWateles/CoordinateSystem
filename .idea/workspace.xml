@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления" />
+    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/coordinate_system.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests_coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests_coordinate_system.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,6 +41,7 @@
     &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;Python.abs_object.executor&quot;: &quot;Run&quot;,
     &quot;Python.coordinate_system.executor&quot;: &quot;Run&quot;,
+    &quot;Python.coordinate_system_3d.executor&quot;: &quot;Run&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;Python.no_git.executor&quot;: &quot;Run&quot;,
     &quot;Python.objects.executor&quot;: &quot;Run&quot;,
@@ -92,14 +98,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1735491126375</updated>
-    </task>
-    <task id="LOCAL-00005" summary="test2()">
-      <option name="closed" value="true" />
-      <created>1735583031397</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1735583031397</updated>
     </task>
     <task id="LOCAL-00006" summary="Добавил логику работы с plt.Circle">
       <option name="closed" value="true" />
@@ -485,7 +483,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737381484374</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="Исправления">
+      <option name="closed" value="true" />
+      <created>1737381634750</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1737381634750</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

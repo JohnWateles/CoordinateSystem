@@ -224,7 +224,6 @@ class CoordinateSystem:
         :param name:
         :return:
         """
-
         # Переходим в координаты системы self
         new_x = new_position[0] * np.cos(self.angle) - new_position[1] * np.sin(self.angle)
         new_y = new_position[0] * np.sin(self.angle) + new_position[1] * np.cos(self.angle)

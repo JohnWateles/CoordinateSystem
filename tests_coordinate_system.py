@@ -627,6 +627,25 @@ def test7():
     plt.show()
 
 
+def test8():
+    figure = plt.figure(figsize=[8, 8])
+    ax = figure.add_subplot()
+    ax.set(xlim=[-10, 10], ylim=[-10, 10])
+    show_center = True
+    show_axes = True
+    acs = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    acs.add("circle", plt.Circle((0, 0), 3, color=(0.5, 0.5, 0.5)))
+
+    def frame(i):
+        circle = acs["circle"]
+        acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
+        circle.radius = 2 * (np.cos(0.01 * i) + 1.5)
+        circle.set(color=(abs(np.cos(0.045 * i)), abs(np.sin(0.09 * i)), abs(np.cos(0.0672 * i))))
+
+    _ = FuncAnimation(figure, frame, interval=20, frames=12000)
+    plt.show()
+
+
 def test_spiral_spring():
     figure = plt.figure(figsize=[8, 8])
     ax = figure.add_subplot()
