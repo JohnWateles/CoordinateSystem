@@ -633,9 +633,7 @@ def test8():
 
     show_center = True
     show_axes = True
-    acs = CoordinateSystem(ax, color=(1, 0, 0), show_center=show_center, show_axes=show_axes)
-
-    print(acs.__sizeof__())
+    acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=show_center, show_axes=show_axes)
 
     # @show_execution_time
     def frame(i):
