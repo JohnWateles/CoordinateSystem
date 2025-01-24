@@ -3,7 +3,6 @@ import sympy as sp
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from coordinate_system import CoordinateSystem, SpiralSpring, get_spring_line, show_execution_time
-from time import perf_counter
 import math
 
 
