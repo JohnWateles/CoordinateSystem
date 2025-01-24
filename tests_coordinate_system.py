@@ -627,6 +627,7 @@ def test7():
 
 
 def test8():
+    # 21
     figure = plt.figure(figsize=(8, 8))
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[-15, 15], ylim=[-15, 15])
@@ -665,17 +666,20 @@ def test8():
 
     # @show_execution_time
     def frame(i):
-        # return
-        angle = 70 * np.sin(0.05 * i)
-        acs.rotate_to_local_angle("s1", angle)
-        acs.rotate_to_local_angle("s2", angle)
+        phi = 70 * np.sin(0.05 * i)
+        theta = 40 * np.sin(0.05 * (i - 15))
+
+        acs.rotate_to_local_angle("s1", phi)
+        acs.rotate_to_local_angle("s2", phi)
+
         pointA = acs["s1"]["pointA"].get_data()
         pointB = acs["s2"]["pointB"].get_data()
         new_x = pointA[0][0], pointB[0][0]
         new_y = pointA[1][0], pointB[1][0]
         center = (new_x[0] + new_x[1]) / 2, (new_y[0] + new_y[1]) / 2
+
         acs["s_disk"].move(center)
-        acs.rotate_to_local_angle("s_disk", 40 * np.sin(0.05 * (i - 15)))
+        acs.rotate_to_local_angle("s_disk", theta)
         acs["lineAB"].set_data(new_x, new_y)
 
         acs.move([5 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
