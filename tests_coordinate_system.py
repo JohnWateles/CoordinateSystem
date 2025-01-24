@@ -631,14 +631,54 @@ def test8():
     ax = figure.add_subplot(1, 1, 1)
     ax.set(xlim=[-15, 15], ylim=[-15, 15])
 
-    show_center = True
-    show_axes = True
+    show_center = False     # or True
+    show_axes = False       # or True
     acs = CoordinateSystem(ax, color=(0, 0, 0), show_center=show_center, show_axes=show_axes)
+    s1 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    s2 = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    s_disk = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
+    lengthAB = 8
+    lengthA1A = 5
+    line_width = 5
+    black = (0, 0, 0)
+
+    s1.add("A1A", ax.plot([0, 0], [0, -lengthA1A], lw=line_width, color=black))
+    s1.add("pointA", ax.plot([0], [-lengthA1A], "o", color=(0, 0, 0)))
+    s2.add("B1B", ax.plot([0, 0], [0, -lengthA1A], lw=line_width, color=black))
+    s2.add("pointB", ax.plot([0], [-lengthA1A], "o", color=(0, 0, 0)))
+    s1.move([-lengthAB / 2, 2])
+    s2.move([lengthAB / 2, 2])
+
+    lengthOC = 3
+    disk_radius = 2
+    s_disk.add("lineOC", ax.plot([0, 0], [0, -lengthOC], lw=2, color=black))
+    s_disk.add("pointC", ax.plot([0], [-lengthOC]))
+    s_disk.add("disk", plt.Circle((0, -lengthOC), disk_radius, color=(*black, 0.2)))
+    s_disk.move([0, 2 - lengthA1A])
+
+    lineAB = ax.plot([-lengthAB / 2, lengthAB / 2], [2 - lengthA1A, 2 - lengthA1A], lw=line_width, color=black)
+
+    acs.add("s1", s1)
+    acs.add("s2", s2)
+    acs.add("s_disk", s_disk)
+    acs.add("lineAB", lineAB)
 
     # @show_execution_time
     def frame(i):
-        i = i % 10000
+        # return
+        angle = 70 * np.sin(0.05 * i)
+        acs.rotate_to_local_angle("s1", angle)
+        acs.rotate_to_local_angle("s2", angle)
+        pointA = acs["s1"]["pointA"].get_data()
+        pointB = acs["s2"]["pointB"].get_data()
+        new_x = pointA[0][0], pointB[0][0]
+        new_y = pointA[1][0], pointB[1][0]
+        center = (new_x[0] + new_x[1]) / 2, (new_y[0] + new_y[1]) / 2
+        acs["s_disk"].move(center)
+        acs.rotate_to_local_angle("s_disk", 40 * np.sin(0.05 * (i - 15)))
+        acs["lineAB"].set_data(new_x, new_y)
 
+        acs.move([5 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()
 

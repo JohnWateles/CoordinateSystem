@@ -120,6 +120,8 @@ class CoordinateSystem:
         :param any_object:
         :return:
         """
+        if isinstance(any_object, list):
+            any_object = any_object[0]
         self.object_names[name] = (any_object, )
         self.__last = name
         if isinstance(any_object, patches.Patch):

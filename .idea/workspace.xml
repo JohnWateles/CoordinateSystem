@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления" />
+    <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/coordinate_system.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests_coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests_coordinate_system.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,14 +98,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1735491126375</updated>
-    </task>
-    <task id="LOCAL-00011" summary="...">
-      <option name="closed" value="true" />
-      <created>1735653322812</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1735653322812</updated>
     </task>
     <task id="LOCAL-00012" summary="Добавлены комментарии">
       <option name="closed" value="true" />
@@ -486,7 +483,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737702993863</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="Исправления">
+      <option name="closed" value="true" />
+      <created>1737703389203</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1737703389204</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -509,16 +514,5 @@
     <MESSAGE value="Спиральная пружина" />
     <MESSAGE value="Исправления" />
     <option name="LAST_COMMIT_MESSAGE" value="Исправления" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/AppData/Local/Programs/Python/Python312/Lib/site-packages/matplotlib/patches.py</url>
-          <line>4</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
