@@ -628,19 +628,19 @@ def test7():
 
 
 def test8():
-    figure = plt.figure(figsize=[8, 8])
-    ax = figure.add_subplot()
-    ax.set(xlim=[-10, 10], ylim=[-10, 10])
+    figure = plt.figure(figsize=(8, 8))
+    ax = figure.add_subplot(1, 1, 1)
+    ax.set(xlim=[-15, 15], ylim=[-15, 15])
+
     show_center = True
     show_axes = True
-    acs = CoordinateSystem(ax, show_center=show_center, show_axes=show_axes)
-    acs.add("circle", plt.Circle((0, 0), 3, color=(0.5, 0.5, 0.5)))
+    acs = CoordinateSystem(ax, color=(1, 0, 0), show_center=show_center, show_axes=show_axes)
 
+    print(acs.__sizeof__())
+
+    # @show_execution_time
     def frame(i):
-        circle = acs["circle"]
-        acs.move([3 * np.cos(0.01 * i), 3 * np.sin(0.01 * i)])
-        circle.radius = 2 * (np.cos(0.01 * i) + 1.5)
-        circle.set(color=(abs(np.cos(0.045 * i)), abs(np.sin(0.09 * i)), abs(np.cos(0.0672 * i))))
+        i = i % 10000
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)
     plt.show()

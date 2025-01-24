@@ -31,6 +31,8 @@ type CoordSys = CoordinateSystem    # Для адекватной аннотац
 
 
 class CoordinateSystem:
+    __slots__ = ("ax", "center", "__angle", "object_names", "__last")
+
     def __init__(self, ax=None, center=(0, 0), color=None, show_center=False, show_axes=False):
         self.ax = ax
         self.center = center
