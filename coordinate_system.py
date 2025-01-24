@@ -1,7 +1,5 @@
 import numpy as np
-# import sympy as sp
 import matplotlib.pyplot as plt
-# from matplotlib.animation import FuncAnimation
 import matplotlib.patches as patches
 import matplotlib.lines as mat_lines
 from time import perf_counter
