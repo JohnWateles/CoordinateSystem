@@ -81,9 +81,9 @@ class CoordinateSystem:
         return self.__center
 
     @property
-    def last(self):
+    def last(self) -> CoordSys | plt.Line2D | plt.Circle | plt.Rectangle:
         """
-        Возвращает имя последнего добавленного в систему объекта
+        Возвращает последний добавленный в систему объект
         :return:
         """
         return self.object_names[self.__last][0]
