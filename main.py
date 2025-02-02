@@ -1,6 +1,10 @@
 from tests_coordinate_system import *
 
 
+def start_test(i):
+    exec(f"test{i}()")
+
+
 def main():
     current_test = "_rotate_to_local_angle"
     current_test = "_spiral_spring"
@@ -11,7 +15,7 @@ def main():
         i = 1
         while True:
             try:
-                exec(f"test{i}()")
+                start_test(i)
                 i += 1
             except Exception as e:
                 break

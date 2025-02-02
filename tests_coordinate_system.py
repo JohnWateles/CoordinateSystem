@@ -360,7 +360,7 @@ def test4():
         _alpha = np.arccos(_vector[0] * _e_vector[0] + _vector[1] * _e_vector[1]) * (180 / np.pi)   # Угол поворота
 
         # Создаём пружину уже повёрнутую на угол (_s_spring.angle), соответствующий текущему углу системы _s_spring
-        _spring_xy = get_spring_line(_distance, 15, 0.5, pos=_s_spring.xy, angle=_s_spring.angle,
+        _spring_xy = get_spring_line(_distance, 15, 0.5, pos=_s_spring.center, angle=_s_spring.angle,
                                      center=acs.center)
         _s_spring["spring"].set_data(_spring_xy)
 

@@ -29,11 +29,11 @@ type CoordSys = CoordinateSystem    # Для адекватной аннотац
 
 
 class CoordinateSystem:
-    __slots__ = ("ax", "center", "__angle", "object_names", "__last")
+    __slots__ = ("ax", "__center", "__angle", "object_names", "__last")
 
     def __init__(self, ax=None, center=(0, 0), color=None, show_center=False, show_axes=False):
         self.ax = ax
-        self.center = center
+        self.__center = center
         self.__angle = 0  # Угол в радианах
         self.object_names = dict()
         self.__last = ""
@@ -62,7 +62,7 @@ class CoordinateSystem:
         Возвращает координату центра по оси Ox
         :return:
         """
-        return self.center[0]
+        return self.__center[0]
 
     @property
     def y(self):
@@ -70,11 +70,15 @@ class CoordinateSystem:
         Возвращает координату центра по оси Oy
         :return:
         """
-        return self.center[1]
+        return self.__center[1]
 
     @property
-    def xy(self):
-        return [self.x, self.y]
+    def center(self):
+        """
+        Возвращает координаты центра
+        :return:
+        """
+        return self.__center
 
     @property
     def last(self):
@@ -148,7 +152,7 @@ class CoordinateSystem:
                 new_x = (x - center[0]) * np.cos(angle) - (y - center[1]) * np.sin(angle) + center[0]
                 new_y = (x - center[0]) * np.sin(angle) + (y - center[1]) * np.cos(angle) + center[1]
                 if name_obj == f"__CENTER__OF_{repr(self)}":
-                    self.center = new_x[0], new_y[0]
+                    self.__center = new_x[0], new_y[0]
                 obj.set_data(new_x, new_y)
             elif isinstance(obj, plt.Rectangle):
                 x1, y1 = obj.xy
@@ -215,7 +219,7 @@ class CoordinateSystem:
                 new_x = obj.x + new_position[0] - self.x
                 new_y = obj.y + new_position[1] - self.y
                 obj.move([new_x, new_y])
-        self.center = new_position
+        self.__center = new_position
 
     # @show_execution_time
     def move_object(self, name: str = None, new_position: list | tuple = (0, 0)):
