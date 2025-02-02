@@ -7,8 +7,6 @@
     <list default="true" id="84d7f10e-92ef-4388-871b-e4b96f7513b7" name="Changes" comment="Исправления">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/coordinate_system.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests_coordinate_system.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests_coordinate_system.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,22 +98,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1735491126375</updated>
-    </task>
-    <task id="LOCAL-00014" summary="changes...">
-      <option name="closed" value="true" />
-      <created>1735812869397</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1735812869397</updated>
-    </task>
-    <task id="LOCAL-00015" summary="changes...">
-      <option name="closed" value="true" />
-      <created>1735816800363</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1735816800363</updated>
     </task>
     <task id="LOCAL-00016" summary="Исправления в методах&#10;test4()">
       <option name="closed" value="true" />
@@ -493,7 +475,23 @@
       <option name="project" value="LOCAL" />
       <updated>1737731863526</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="Исправления">
+      <option name="closed" value="true" />
+      <created>1738515805244</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1738515805244</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Исправления">
+      <option name="closed" value="true" />
+      <created>1738515972061</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1738515972061</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -514,8 +512,8 @@
     <MESSAGE value="Исправления поворота угла (-90 гр)" />
     <MESSAGE value="numpy optimizated" />
     <MESSAGE value="Спиральная пружина" />
-    <MESSAGE value="Исправления" />
     <MESSAGE value="Тест 8" />
-    <option name="LAST_COMMIT_MESSAGE" value="Тест 8" />
+    <MESSAGE value="Исправления" />
+    <option name="LAST_COMMIT_MESSAGE" value="Исправления" />
   </component>
 </project>

@@ -96,11 +96,6 @@ class CoordinateSystem:
         """
         return self.__angle
 
-    @angle.setter
-    def angle(self, value):
-        value = value % (2 * np.pi)
-        self.__angle = value
-
     def get(self, name: str) -> CoordSys | plt.Line2D | plt.Circle | plt.Rectangle:
         """
         Возвращает объект по имени name
@@ -164,8 +159,7 @@ class CoordinateSystem:
                 obj.center = self._rot2d(x1, y1, angle, center)
             elif isinstance(obj, CoordinateSystem):
                 obj.rotate(angle, center)
-        self.angle += angle
-        self.angle = self.angle % (2 * np.pi)
+        self.__angle = (self.__angle + angle) % (2 * np.pi)
 
     def rotate_to_angle(self, angle, center=None):
         """
