@@ -346,6 +346,9 @@ def test4():
         _phi1 = 390 * ((np.sin(coefficient1 * i)) / 2)
         _phi2 = 335 * ((np.sin(-coefficient2 * i) + 0.8) / 2)
 
+        # Меняем положение точки начала/конца пружины (можно закомментировать, тогда точка будет статичной)
+        s1.move_object("point", [1.2 * distance_to_point1 * ((np.sin(0.06 * i) + 1.5) / 3), 0])
+
         # Повторяем действия при настройке начальных положений с некоторыми изменениями:
         ###
         acs.rotate_to_local_angle("s1", _phi2)  # Поворачиваем систему s1 на соответствующий угол
@@ -384,9 +387,6 @@ def test4():
         new_pos_x = new_x - acs.x
         new_pos_y = new_y - acs.y
         acs.move_object("s_spring", [new_pos_x, new_pos_y])     # Перемещаем систему координат пружины в нужную точку
-
-        # Меняем положение точки начала/конца пружины (можно закомментировать, тогда точка будет статичной)
-        s1.move_object("point", [1.2 * distance_to_point1 * ((np.sin(0.06 * i) + 1.5) / 3), 0])
         ###
 
     _ = FuncAnimation(figure, frame, interval=20, frames=12000)

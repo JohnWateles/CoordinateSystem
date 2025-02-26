@@ -41,11 +41,19 @@ class CoordinateSystem:
             raise ValueError(f"Параметр \"ax\" должен быть определён!")
         if (color is None) and show_center:
             self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]], 'o')[0])
+            # params = ('o', )
+            # k_params = dict()
         elif show_center:
             self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]], 'o', color=color)[0])
+            # params = ('o', )
+            # k_params = {"color": color}
         else:
             self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]], color=(0, 0, 0))[0])
-            # Центр должен быть, иначе неправильно работают методы rotate_to_angle() и move_object()
+            # params = tuple()
+            # k_params = {"color": (0, 0, 0)}
+
+        # self.add(f"__CENTER__OF_{repr(self)}", ax.plot([center[0]], [center[1]], *params, **k_params)[0])
+        # Центр должен быть, иначе неправильно работают методы rotate_to_angle() и move_object()
         if show_axes:
             axis_length = 3
             axis_width = 0.8
